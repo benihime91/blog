@@ -239,23 +239,9 @@ window.onload = wrap_img;
     <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="p">((</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">x_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">),</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="p">(</span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">x_valid</span><span class="p">,</span><span class="n">y_valid</span><span class="p">))</span>
-</pre></div>
 
-    </div>
-</div>
-</div>
 
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">x_valid</span><span class="p">,</span><span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span> <span class="s2">&quot;../../Datasets/mnist.pkl.gz&quot;</span><span class="p">)</span>
+<span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">x_valid</span><span class="p">,</span><span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span> <span class="s2">&quot;../../Datasets/mnist.pkl.gz&quot;</span><span class="p">)</span>
 
 <span class="n">tots</span><span class="p">,</span><span class="n">feats</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">shape</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape of x_train:&quot;</span><span class="p">,</span><span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -341,57 +327,9 @@ Number of pixel values per image: 784
 </div>
 </div>
 </div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zero_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_valid</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># grab all the index values where 0 is present</span>
-<span class="n">one_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_valid</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># grad all the index valus where 1 is present</span>
-
-<span class="c1"># grab all the 1&#39;s and 0&#39;s and make training set</span>
-<span class="n">x_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x_valid</span><span class="p">[</span><span class="n">zero_mask</span><span class="p">],</span> <span class="n">x_valid</span><span class="p">[</span><span class="n">one_mask</span><span class="p">]))</span>
-<span class="n">y_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y_valid</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">y_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">y_valid</span><span class="p">[</span><span class="n">zero_mask</span><span class="p">],</span> <span class="n">y_valid</span><span class="p">[</span><span class="n">one_mask</span><span class="p">])))</span>
-
-<span class="n">x_valid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_valid</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>((2055, 784), (2055,))</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Hence, now our training set has 2055 examples</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's view one image from our dataset:</p>
+<p>Let's view some example images from our dataset:</p>
 
 </div>
 </div>
@@ -877,51 +815,27 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Consequently our backward pass in psuedo code would be something like this :</p>
-<div class="highlight"><pre><span></span><span class="c1"># let us assume that the `grad()` computes the gradeients of to given inputs</span>
-<span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">input1</span><span class="p">,</span> <span class="n">input2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    computes the gradient of input1 wrt to input2</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># the gradient of input1 wrt to input2, we will worry about this afterwards</span>
-    <span class="k">return</span> <span class="n">g</span>
+<p>Consequently our backward pass in psuedo code would be something like this :<br />
+(Let us assume that the <code>grad(inp, out)</code> computes the gradients of <code>inp</code> wrt <code>out</code>)</p>
+<div class="highlight"><pre><span></span><span class="c1"># gradient of loss wrt output of the previous activation layer</span>
+<span class="n">da2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> 
 
+<span class="c1"># gradient of the loss wrt to weight w2</span>
+<span class="n">dw2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span> <span class="o">=</span> <span class="n">da2</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span>
+<span class="c1"># gradient of the loss wrt to bias b2</span>
+<span class="n">db2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span> <span class="o">=</span> <span class="n">da2</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
+<span class="c1"># gradient of loss wrt z2: </span>
+<span class="n">dz2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">z2</span><span class="p">)</span> <span class="c1"># these are needed to continue the backward-pass</span>
 
-<span class="c1"># Backward Pass :</span>
+<span class="c1"># gradient of loss wrt a1</span>
+<span class="n">da1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span> <span class="o">=</span> <span class="n">dz2</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span>
 
-<span class="n">dL</span>  <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> <span class="c1"># this is the gradient of the loss wrt output of the previous layer</span>
-<span class="n">da2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span> <span class="c1"># this is the gradient of a2 wrt z2</span>
-
-<span class="c1"># this is the gradient of the weights w2 wrt loss</span>
-<span class="c1"># this is used to update the parameters</span>
-<span class="n">dw2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
-<span class="n">dw2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span> <span class="c1"># using chain rule</span>
-<span class="n">dw2</span> <span class="o">=</span> <span class="n">dL</span> <span class="o">*</span> <span class="n">da2</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span>
-<span class="n">dw2</span> <span class="o">=</span> <span class="n">grad_of_prev_layers</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span>
-
-<span class="c1"># this is the gradient of the bias b2 wrt loss</span>
-<span class="n">db2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
-<span class="n">db2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span> <span class="c1"># using chain rule</span>
-<span class="n">db2</span> <span class="o">=</span> <span class="n">dL</span> <span class="o">*</span> <span class="n">da2</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
-<span class="n">db2</span> <span class="o">=</span> <span class="n">grad_of_prev_layers</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
-
-
-<span class="n">dz2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span> <span class="c1"># this is the gradient of z2 wrt a1</span>
-<span class="n">da1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">z1</span><span class="p">)</span> <span class="c1"># this the gradient of a1 wrt to z1</span>
-
-<span class="c1"># this is the gradient of the weights w1 wrt loss</span>
-<span class="n">dw1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
-<span class="n">dw1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">z1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span> <span class="c1"># using chain rule</span>
-<span class="n">dw1</span> <span class="o">=</span> <span class="n">dL</span> <span class="o">*</span> <span class="n">da2</span> <span class="o">*</span> <span class="n">dz2</span> <span class="o">*</span> <span class="n">da1</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span>
-<span class="n">dw1</span> <span class="o">=</span> <span class="n">grad_of_prev_layers</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span>
-
-<span class="c1"># this is the gradient of the bias b1 wrt loss</span>
-<span class="n">db1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
-<span class="n">db1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">z1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span>  <span class="c1"># using chain rule</span>
-<span class="n">db1</span> <span class="o">=</span> <span class="n">dL</span> <span class="o">*</span> <span class="n">da2</span> <span class="o">*</span> <span class="n">dz2</span> <span class="o">*</span> <span class="n">da1</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span>
-<span class="n">db1</span> <span class="o">=</span> <span class="n">grad_of_prev_layers</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span>
-
-
+<span class="c1"># gradient of the loss wrt to weight w1</span>
+<span class="n">dw1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span> <span class="o">=</span> <span class="n">dz1</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span>
+<span class="c1"># gradient of the loss wrt to bias b1</span>
+<span class="n">db1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span> <span class="o">=</span> <span class="n">dz1</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span>
+<span class="c1"># gradient of loss wrt z1</span>
+<span class="n">dz1</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">z1</span><span class="p">)</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">z1</span><span class="p">)</span> <span class="o">=</span> <span class="n">da1</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">z1</span><span class="p">)</span>
 
 <span class="c1"># Update parameters :</span>
 <span class="c1"># since we now have all the required gradients we can now perform the update step</span>
@@ -937,230 +851,22 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-Linear-Layer">The Linear Layer<a class="anchor-link" href="#The-Linear-Layer"> </a></h2>
+<h3 id="The-Linear-Layer">The Linear Layer<a class="anchor-link" href="#The-Linear-Layer"> </a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Forward-Propagation">Forward Propagation<a class="anchor-link" href="#Forward-Propagation"> </a></h3><p>In this step the outputs are calculated.</p>
+<p>Below code creates a <code>Linear class</code> which represents a <code>Linear</code> layer in out neural-network. The <code>forward function</code> of the class implements the of the <code>layer's forward propagation</code> &amp; the <code>backward function</code> implements the <code>layers's backward propagation</code>. Let's go to detail into what the code means:</p>
+<ul>
+<li><p><strong>forward:</strong><br />
+This part is quite straight-forward it computes the dot-product between the <code>input</code> and the <code>weights</code> &amp; adds the <code>bias</code> term to get <code>z</code>. It also stores all the intermidiate values generated to use in the backward pass.</p>
+</li>
+<li><p><strong>backward:</strong><br />
+This part is a bit complicated. Let's go through this. The backward method of the class <code>Linear</code> takes in the argument <code>grads</code>. <code>grads</code> is just the gradients calculated from the previous layers or if we were to follow the nonenclature of the above written <code>pseudo-codes</code> : <code>grads</code> would be same as <code>da</code>.</p>
+</li>
+</ul>
 
-</div>
-</div>
-</div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_svg output_subarea output_execute_result">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
-<!-- Generated by graphviz version 2.44.0 (20200408.0750)
- -->
-<!-- Title: G Pages: 1 -->
-<svg width="386pt" height="125pt" viewBox="0.00 0.00 385.78 125.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 121)">
-<title>G</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-121 381.78,-121 381.78,4 -4,4" />
-<!-- Input -->
-<g id="node1" class="node">
-<title>Input</title>
-<ellipse fill="none" stroke="black" cx="36.4" cy="-99" rx="29.5" ry="18" />
-<text text-anchor="middle" x="36.4" y="-95.3" font-family="Times,serif" font-size="14.00">Input</text>
-</g>
-<!-- matmul -->
-<g id="node2" class="node">
-<title>matmul</title>
-<ellipse fill="none" stroke="black" cx="147.14" cy="-72" rx="38.19" ry="18" />
-<text text-anchor="middle" x="147.14" y="-68.3" font-family="Times,serif" font-size="14.00">matmul</text>
-</g>
-<!-- Input&#45;&gt;matmul -->
-<g id="edge1" class="edge">
-<title>Input&#45;&gt;matmul</title>
-<path fill="none" stroke="black" d="M63.72,-92.46C75.44,-89.55 89.56,-86.05 102.77,-82.77" />
-<polygon fill="black" stroke="black" points="103.78,-86.12 112.64,-80.32 102.09,-79.33 103.78,-86.12" />
-</g>
-<!-- add -->
-<g id="node3" class="node">
-<title>add</title>
-<ellipse fill="none" stroke="black" cx="248.49" cy="-45" rx="27" ry="18" />
-<text text-anchor="middle" x="248.49" y="-41.3" font-family="Times,serif" font-size="14.00">add</text>
-</g>
-<!-- matmul&#45;&gt;add -->
-<g id="edge2" class="edge">
-<title>matmul&#45;&gt;add</title>
-<path fill="none" stroke="black" d="M180.67,-63.16C191.13,-60.32 202.75,-57.16 213.33,-54.28" />
-<polygon fill="black" stroke="black" points="214.35,-57.63 223.08,-51.63 212.51,-50.88 214.35,-57.63" />
-</g>
-<!-- output -->
-<g id="node4" class="node">
-<title>output</title>
-<ellipse fill="none" stroke="black" cx="344.63" cy="-45" rx="33.29" ry="18" />
-<text text-anchor="middle" x="344.63" y="-41.3" font-family="Times,serif" font-size="14.00">output</text>
-</g>
-<!-- add&#45;&gt;output -->
-<g id="edge3" class="edge">
-<title>add&#45;&gt;output</title>
-<path fill="none" stroke="black" d="M275.71,-45C283.61,-45 292.49,-45 301.16,-45" />
-<polygon fill="black" stroke="black" points="301.17,-48.5 311.17,-45 301.17,-41.5 301.17,-48.5" />
-</g>
-<!-- Weight -->
-<g id="node5" class="node">
-<title>Weight</title>
-<ellipse fill="none" stroke="black" cx="36.4" cy="-45" rx="36.29" ry="18" />
-<text text-anchor="middle" x="36.4" y="-41.3" font-family="Times,serif" font-size="14.00">Weight</text>
-</g>
-<!-- Weight&#45;&gt;matmul -->
-<g id="edge4" class="edge">
-<title>Weight&#45;&gt;matmul</title>
-<path fill="none" stroke="black" d="M69.14,-52.88C79.61,-55.48 91.43,-58.42 102.61,-61.19" />
-<polygon fill="black" stroke="black" points="102.1,-64.67 112.65,-63.68 103.79,-57.88 102.1,-64.67" />
-</g>
-<!-- Bias -->
-<g id="node6" class="node">
-<title>Bias</title>
-<ellipse fill="none" stroke="black" cx="147.14" cy="-18" rx="27" ry="18" />
-<text text-anchor="middle" x="147.14" y="-14.3" font-family="Times,serif" font-size="14.00">Bias</text>
-</g>
-<!-- Bias&#45;&gt;add -->
-<g id="edge5" class="edge">
-<title>Bias&#45;&gt;add</title>
-<path fill="none" stroke="black" d="M172.44,-24.6C184.71,-27.94 199.8,-32.04 213.22,-35.69" />
-<polygon fill="black" stroke="black" points="212.52,-39.12 223.09,-38.37 214.36,-32.37 212.52,-39.12" />
-</g>
-</g>
-</svg>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Backward-Propagation:">Backward Propagation:<a class="anchor-link" href="#Backward-Propagation:"> </a></h3><p>In this step the gradients of the output wrt to the inputs, weights and bias are calculated.</p>
-
-</div>
-</div>
-</div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_svg output_subarea output_execute_result">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
-<!-- Generated by graphviz version 2.44.0 (20200408.0750)
- -->
-<!-- Title: G Pages: 1 -->
-<svg width="437pt" height="125pt" viewBox="0.00 0.00 436.78 125.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 121)">
-<title>G</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-121 432.78,-121 432.78,4 -4,4" />
-<!-- output -->
-<g id="node1" class="node">
-<title>output</title>
-<ellipse fill="none" stroke="black" cx="33.15" cy="-33" rx="33.29" ry="18" />
-<text text-anchor="middle" x="33.15" y="-29.3" font-family="Times,serif" font-size="14.00">output</text>
-</g>
-<!-- add -->
-<g id="node2" class="node">
-<title>add</title>
-<ellipse fill="none" stroke="black" cx="130.29" cy="-33" rx="27" ry="18" />
-<text text-anchor="middle" x="130.29" y="-29.3" font-family="Times,serif" font-size="14.00">add</text>
-</g>
-<!-- output&#45;&gt;add -->
-<g id="edge1" class="edge">
-<title>output&#45;&gt;add</title>
-<path fill="none" stroke="black" d="M66.36,-33C74.87,-33 84.11,-33 92.83,-33" />
-<polygon fill="black" stroke="black" points="93.11,-36.5 103.11,-33 93.11,-29.5 93.11,-36.5" />
-</g>
-<!-- matmul -->
-<g id="node3" class="node">
-<title>matmul</title>
-<ellipse fill="none" stroke="black" cx="256.64" cy="-72" rx="38.19" ry="18" />
-<text text-anchor="middle" x="256.64" y="-68.3" font-family="Times,serif" font-size="14.00">matmul</text>
-</g>
-<!-- add&#45;&gt;matmul -->
-<g id="edge2" class="edge">
-<title>add&#45;&gt;matmul</title>
-<path fill="none" stroke="black" d="M154.98,-40.43C171.73,-45.68 194.64,-52.87 214.37,-59.06" />
-<polygon fill="black" stroke="black" points="213.47,-62.44 224.06,-62.09 215.56,-55.76 213.47,-62.44" />
-</g>
-<!-- Bias -->
-<g id="node6" class="node">
-<title>Bias</title>
-<ellipse fill="none" stroke="black" cx="256.64" cy="-18" rx="27" ry="18" />
-<text text-anchor="middle" x="256.64" y="-14.3" font-family="Times,serif" font-size="14.00">Bias</text>
-</g>
-<!-- add&#45;&gt;Bias -->
-<g id="edge5" class="edge">
-<title>add&#45;&gt;Bias</title>
-<path fill="none" stroke="black" d="M157.06,-29.89C175.23,-27.7 199.81,-24.73 219.88,-22.31" />
-<polygon fill="black" stroke="black" points="220.4,-25.78 229.91,-21.1 219.56,-18.83 220.4,-25.78" />
-<text text-anchor="middle" x="187.79" y="-31.8" font-family="Times,serif" font-size="14.00">grad</text>
-</g>
-<!-- Input -->
-<g id="node4" class="node">
-<title>Input</title>
-<ellipse fill="none" stroke="black" cx="392.38" cy="-99" rx="29.5" ry="18" />
-<text text-anchor="middle" x="392.38" y="-95.3" font-family="Times,serif" font-size="14.00">Input</text>
-</g>
-<!-- matmul&#45;&gt;Input -->
-<g id="edge3" class="edge">
-<title>matmul&#45;&gt;Input</title>
-<path fill="none" stroke="black" d="M292.08,-78.95C311.11,-82.79 334.76,-87.57 354.2,-91.49" />
-<polygon fill="black" stroke="black" points="353.73,-94.97 364.23,-93.52 355.12,-88.11 353.73,-94.97" />
-<text text-anchor="middle" x="325.49" y="-90.8" font-family="Times,serif" font-size="14.00">grad</text>
-</g>
-<!-- Weight -->
-<g id="node5" class="node">
-<title>Weight</title>
-<ellipse fill="none" stroke="black" cx="392.38" cy="-45" rx="36.29" ry="18" />
-<text text-anchor="middle" x="392.38" y="-41.3" font-family="Times,serif" font-size="14.00">Weight</text>
-</g>
-<!-- matmul&#45;&gt;Weight -->
-<g id="edge4" class="edge">
-<title>matmul&#45;&gt;Weight</title>
-<path fill="none" stroke="black" d="M292.08,-65.05C309.32,-61.57 330.36,-57.32 348.62,-53.63" />
-<polygon fill="black" stroke="black" points="349.33,-57.06 358.44,-51.65 347.95,-50.2 349.33,-57.06" />
-<text text-anchor="middle" x="325.49" y="-63.8" font-family="Times,serif" font-size="14.00">grad</text>
-</g>
-</g>
-</svg>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Coding-up-the-Linar-Layer:">Coding up the Linar Layer:<a class="anchor-link" href="#Coding-up-the-Linar-Layer:"> </a></h3>
 </div>
 </div>
 </div>
@@ -1171,22 +877,48 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">linear_forward</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Implement the linear part of a layer&#39;s forward propagation.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Linear</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement the linear part of a layer&#39;s forward propagation.</span>
+<span class="sd">        Args:</span>
+<span class="sd">        -----</span>
+<span class="sd">            inp : activations from previous layer (or input data)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">        -------</span>
+<span class="sd">            Z  : the input of the activation function, also called pre-activation parameter </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inp</span> <span class="o">=</span> <span class="n">inp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span>   <span class="o">=</span> <span class="n">inp</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+    
+    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement the linear portion of backward propagation for a single layer.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">    inp : activations from previous layer (or input data): (size of previous layer, number of examples)</span>
-<span class="sd">    W : weights matrix: numpy array of shape (size of current layer, size of previous layer)</span>
-<span class="sd">    b : bias vector, numpy array of shape (size of the current layer, 1)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">    Z : the input of the activation function, also called pre-activation parameter </span>
-<span class="sd">    cache : a python tuple containing &quot;A&quot;, &quot;W&quot; and &quot;b&quot; ; stored for computing the backward pass efficiently</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">@</span> <span class="n">w</span> <span class="o">+</span> <span class="n">b</span>
-    <span class="n">cache</span> <span class="o">=</span> <span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">z</span><span class="p">,</span> <span class="n">cache</span>
+<span class="sd">        Args:</span>
+<span class="sd">        ----</span>
+<span class="sd">            grads :  Gradient of the cost with respect to the linear output. </span>
+<span class="sd">                     or the accumulated gradients from the prev layers. </span>
+<span class="sd">                     This is used for the chain rule to compute the gradients.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">        -------</span>
+<span class="sd">            dA_prev : Gradient of cost wrt to the activation of the input of the current of layer.</span>
+<span class="sd">            dW      : Gradient of the cost with respect to W</span>
+<span class="sd">            dB      : Gradient of the cost with respect to b</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="n">dW</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inp</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">grads</span><span class="p">)</span>
+        <span class="n">dB</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">dA_prev</span> <span class="o">=</span> <span class="n">grads</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">T</span>
+        
+        <span class="k">return</span> <span class="p">(</span><span class="n">dA_prev</span><span class="p">,</span> <span class="n">dW</span><span class="p">,</span> <span class="n">dB</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1196,6 +928,12 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="The-ReLU-Layer:">The ReLU Layer:<a class="anchor-link" href="#The-ReLU-Layer:"> </a></h3>
+</div>
+</div>
+</div>
     
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1203,31 +941,34 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">linear_backward</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="n">cache</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Implement the linear portion of backward propagation for a single layer (layer l)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">RelU</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement the RELU function.</span>
 
-<span class="sd">    Arguments:</span>
-<span class="sd">    grad -- Gradient of the cost with respect to the linear output (of current layer l)</span>
-<span class="sd">    cache -- tuple of values (A_prev, W, b) coming from the forward propagation in the current layer</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            inp : Output of the linear layer, of any shape</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">    dA_prev -- Gradient of cost wrt to the activation of the previous or the input of the current of layer</span>
-<span class="sd">    dW -- Gradient of the cost with respect to W</span>
-<span class="sd">    db -- Gradient of the cost with respect to b</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">A_prev</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">cache</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">A_prev</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            output: Post-activation parameter, of the same shape as Z</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inp</span> <span class="o">=</span> <span class="n">inp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span>
     
-<span class="c1">#     dW = 1/m * np.dot(dZ, cache[0].T)</span>
-<span class="c1">#     db = 1/m * np.sum(dZ, axis=1, keepdims=True)</span>
-    <span class="c1"># gradient of cost wrt to the activation of the previous or the input of the current of layer</span>
-    <span class="n">dA_prev</span> <span class="o">=</span> <span class="n">grad</span> <span class="o">@</span> <span class="n">W</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">dW</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dZ</span><span class="p">,</span> <span class="n">cache</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-    <span class="n">db</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">dA_prev</span><span class="p">,</span> <span class="n">dW</span><span class="p">,</span> <span class="n">db</span>
-    
+    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement the backward propagation for a single RELU unit.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            grads : post-activation gradient, of any shape</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dZ : Gradient of the cost with respect to Z</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dZ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dZ</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inp</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">dZ</span>
 </pre></div>
 
     </div>
