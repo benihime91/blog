@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Backprogation in NeuralNetworks | Another Deep-Learning Blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Backprogation in NeuralNetworks" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A code first tutorial to compute backpropagation from scratch in python using numpy." />
+<meta property="og:description" content="A code first tutorial to compute backpropagation from scratch in python using numpy." />
+<link rel="canonical" href="https://benihime91.github.io/blog/deeplearning%20python3.x%20numpy/2020/09/22/backpropagation-from-scratch.html" />
+<meta property="og:url" content="https://benihime91.github.io/blog/deeplearning%20python3.x%20numpy/2020/09/22/backpropagation-from-scratch.html" />
+<meta property="og:site_name" content="Another Deep-Learning Blog" />
+<meta property="og:image" content="https://benihime91.github.io/blog/images/backprop.jpeg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-09-22T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"A code first tutorial to compute backpropagation from scratch in python using numpy.","url":"https://benihime91.github.io/blog/deeplearning%20python3.x%20numpy/2020/09/22/backpropagation-from-scratch.html","@type":"BlogPosting","headline":"Backprogation in NeuralNetworks","dateModified":"2020-09-22T00:00:00-05:00","datePublished":"2020-09-22T00:00:00-05:00","image":"https://benihime91.github.io/blog/images/backprop.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://benihime91.github.io/blog/deeplearning%20python3.x%20numpy/2020/09/22/backpropagation-from-scratch.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://benihime91.github.io/blog/feed.xml" title="Another Deep-Learning Blog" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Another Deep-Learning Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Backprogation in NeuralNetworks</h1><p class="page-description">A code first tutorial to compute backpropagation from scratch in python using numpy.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-09-22T00:00:00-05:00" itemprop="datePublished">
+        Sep 22, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#deeplearning python3.x numpy">deeplearning python3.x numpy</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/benihime91/blog/tree/master/_notebooks/2020-09-22-backpropagation-from-scratch.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/benihime91/blog/master?filepath=_notebooks%2F2020-09-22-backpropagation-from-scratch.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/benihime91/blog/blob/master/_notebooks/2020-09-22-backpropagation-from-scratch.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Setting-up-Imports:">Setting up Imports: </a></li>
+<li class="toc-entry toc-h2"><a href="#Preparing-the-data">Preparing the data </a></li>
+<li class="toc-entry toc-h2"><a href="#Basic-Model-Architecture">Basic Model Architecture </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-09-22-backpropagation-from-scratch.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As the Title suggets in this blog post I would try to tackle <code>backpropagation in neural networks</code>.
+We will be using <code>numpy</code> for our calculations for this particular post.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will assume that you all know what a artificial neural network is and have a little bit of knowledge about <code>forward and backward propagation</code>. Just having a simple idea is enough.</p>
+<p>If you do not know what the above terms are or would like to brush up on the topics , I would suggest this amazing <a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">youtube playlist by 3Blue1Brown</a>.
+
+</p>
+<center>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/watch?v=aircAruvnKk&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" frameborder="0" allowfullscreen=""></iframe>
+</center>
+
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Setting-up-Imports:">
+<a class="anchor" href="#Setting-up-Imports:" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setting up Imports:<a class="anchor-link" href="#Setting-up-Imports:"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Preparing-the-data">
+<a class="anchor" href="#Preparing-the-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preparing the data<a class="anchor-link" href="#Preparing-the-data"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For this blog post, we'll use one of the most famous datasets in computer vision, <a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST</a>. MNIST contains images of handwritten digits, collected by the National Institute of Standards and Technology and collated into a machine learning dataset by Yann Lecun and his colleagues. Lecun used MNIST in 1998 in <a href="http://yann.lecun.com/exdb/lenet/">Lenet-5</a>, the first computer system to demonstrate practically useful recognition of handwritten digit sequences. This was one of the most important breakthroughs in the history of AI.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Run the code below to download the <code>MNIST</code> dataset. The dataset will be downloaded to the path <code>../../Datasets/</code> or you can modify the path as you like.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget -P <span class="s2">"../../Datasets/"</span> http://deeplearning.net/data/mnist/mnist.pkl.gz
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Fn to unzip the MNIST data and return</span>
+<span class="sd">    the data as numpy arrays</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="p">((</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">x_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">),</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'latin-1'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="p">(</span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">x_valid</span><span class="p">,</span><span class="n">y_valid</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">x_valid</span><span class="p">,</span><span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span> <span class="s2">"../../Datasets/mnist.pkl.gz"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tots</span><span class="p">,</span><span class="n">feats</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">shape</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape of x_train:"</span><span class="p">,</span><span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total number of examples:"</span><span class="p">,</span> <span class="n">tots</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of pixel values per image:"</span><span class="p">,</span> <span class="n">feats</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Shape of x_train: (50000, 784)
+Total number of examples: 50000
+Number of pixel values per image: 784
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's view one image from our dataset:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"binary"</span><span class="p">);</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Basic-Model-Architecture">
+<a class="anchor" href="#Basic-Model-Architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Model Architecture<a class="anchor-link" href="#Basic-Model-Architecture"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For this task we are going to use a very basic model architecture this 2 linear layers and a output layer with 10 outputs.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our forward pass of the model is going to look something like this:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
+<!-- Generated by graphviz version 2.44.0 (20200408.0750)
+ -->
+<!-- Title: G Pages: 1 -->
+<svg width="662pt" height="206pt" viewbox="0.00 0.00 661.58 206.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 202)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-202 657.58,-202 657.58,4 -4,4"></polygon>
+<!-- X -->
+<g id="node1" class="node">
+<title>X</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-180" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="27" y="-176.3" font-family="Times,serif" font-size="14.00">X</text>
+</g>
+<!-- linear1 -->
+<g id="node2" class="node">
+<title>linear1</title>
+<ellipse fill="none" stroke="black" cx="125.1" cy="-126" rx="35.19" ry="18"></ellipse>
+<text text-anchor="middle" x="125.1" y="-122.3" font-family="Times,serif" font-size="14.00">linear1</text>
+</g>
+<!-- X&#45;&gt;linear1 -->
+<g id="edge1" class="edge">
+<title>X-&gt;linear1</title>
+<path fill="none" stroke="black" d="M48.38,-168.55C60.94,-161.49 77.34,-152.28 91.66,-144.23"></path>
+<polygon fill="black" stroke="black" points="93.7,-147.1 100.7,-139.15 90.27,-140.99 93.7,-147.1"></polygon>
+</g>
+<!-- relu -->
+<g id="node3" class="node">
+<title>relu</title>
+<ellipse fill="none" stroke="black" cx="223.19" cy="-126" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="223.19" y="-122.3" font-family="Times,serif" font-size="14.00">relu</text>
+</g>
+<!-- linear1&#45;&gt;relu -->
+<g id="edge2" class="edge">
+<title>linear1-&gt;relu</title>
+<path fill="none" stroke="black" d="M160.25,-126C168.52,-126 177.39,-126 185.76,-126"></path>
+<polygon fill="black" stroke="black" points="186.01,-129.5 196.01,-126 186.01,-122.5 186.01,-129.5"></polygon>
+</g>
+<!-- linear2 -->
+<g id="node4" class="node">
+<title>linear2</title>
+<ellipse fill="none" stroke="black" cx="321.29" cy="-72" rx="35.19" ry="18"></ellipse>
+<text text-anchor="middle" x="321.29" y="-68.3" font-family="Times,serif" font-size="14.00">linear2</text>
+</g>
+<!-- relu&#45;&gt;linear2 -->
+<g id="edge3" class="edge">
+<title>relu-&gt;linear2</title>
+<path fill="none" stroke="black" d="M244.57,-114.55C257.14,-107.49 273.53,-98.28 287.85,-90.23"></path>
+<polygon fill="black" stroke="black" points="289.89,-93.1 296.9,-85.15 286.47,-86.99 289.89,-93.1"></polygon>
+</g>
+<!-- softmax -->
+<g id="node5" class="node">
+<title>softmax</title>
+<ellipse fill="none" stroke="black" cx="432.03" cy="-72" rx="39.79" ry="18"></ellipse>
+<text text-anchor="middle" x="432.03" y="-68.3" font-family="Times,serif" font-size="14.00">softmax</text>
+</g>
+<!-- linear2&#45;&gt;softmax -->
+<g id="edge4" class="edge">
+<title>linear2-&gt;softmax</title>
+<path fill="none" stroke="black" d="M356.4,-72C364.55,-72 373.4,-72 382.07,-72"></path>
+<polygon fill="black" stroke="black" points="382.11,-75.5 392.11,-72 382.11,-68.5 382.11,-75.5"></polygon>
+</g>
+<!-- Yhat -->
+<g id="node6" class="node">
+<title>Yhat</title>
+<ellipse fill="none" stroke="black" cx="535.63" cy="-72" rx="27.9" ry="18"></ellipse>
+<text text-anchor="middle" x="535.63" y="-68.3" font-family="Times,serif" font-size="14.00">Yhat</text>
+</g>
+<!-- softmax&#45;&gt;Yhat -->
+<g id="edge5" class="edge">
+<title>softmax-&gt;Yhat</title>
+<path fill="none" stroke="black" d="M471.73,-72C480.09,-72 488.91,-72 497.22,-72"></path>
+<polygon fill="black" stroke="black" points="497.4,-75.5 507.4,-72 497.4,-68.5 497.4,-75.5"></polygon>
+</g>
+<!-- loss -->
+<g id="node7" class="node">
+<title>loss</title>
+<ellipse fill="none" stroke="black" cx="626.58" cy="-45" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="626.58" y="-41.3" font-family="Times,serif" font-size="14.00">loss</text>
+</g>
+<!-- Yhat&#45;&gt;loss -->
+<g id="edge6" class="edge">
+<title>Yhat-&gt;loss</title>
+<path fill="none" stroke="black" d="M561.4,-64.48C570.81,-61.62 581.69,-58.32 591.79,-55.26"></path>
+<polygon fill="black" stroke="black" points="592.99,-58.55 601.55,-52.29 590.96,-51.85 592.99,-58.55"></polygon>
+</g>
+<!-- W1 -->
+<g id="node8" class="node">
+<title>W1</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-126" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="27" y="-122.3" font-family="Times,serif" font-size="14.00">W1</text>
+</g>
+<!-- W1&#45;&gt;linear1 -->
+<g id="edge7" class="edge">
+<title>W1-&gt;linear1</title>
+<path fill="none" stroke="black" d="M54.01,-126C61.92,-126 70.84,-126 79.61,-126"></path>
+<polygon fill="black" stroke="black" points="79.76,-129.5 89.76,-126 79.76,-122.5 79.76,-129.5"></polygon>
+</g>
+<!-- B1 -->
+<g id="node9" class="node">
+<title>B1</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-72" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="27" y="-68.3" font-family="Times,serif" font-size="14.00">B1</text>
+</g>
+<!-- B1&#45;&gt;linear1 -->
+<g id="edge8" class="edge">
+<title>B1-&gt;linear1</title>
+<path fill="none" stroke="black" d="M48.38,-83.45C60.94,-90.51 77.34,-99.72 91.66,-107.77"></path>
+<polygon fill="black" stroke="black" points="90.27,-111.01 100.7,-112.85 93.7,-104.9 90.27,-111.01"></polygon>
+</g>
+<!-- W2 -->
+<g id="node10" class="node">
+<title>W2</title>
+<ellipse fill="none" stroke="black" cx="223.19" cy="-72" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="223.19" y="-68.3" font-family="Times,serif" font-size="14.00">W2</text>
+</g>
+<!-- W2&#45;&gt;linear2 -->
+<g id="edge9" class="edge">
+<title>W2-&gt;linear2</title>
+<path fill="none" stroke="black" d="M250.2,-72C258.11,-72 267.04,-72 275.81,-72"></path>
+<polygon fill="black" stroke="black" points="275.96,-75.5 285.96,-72 275.96,-68.5 275.96,-75.5"></polygon>
+</g>
+<!-- B2 -->
+<g id="node11" class="node">
+<title>B2</title>
+<ellipse fill="none" stroke="black" cx="223.19" cy="-18" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="223.19" y="-14.3" font-family="Times,serif" font-size="14.00">B2</text>
+</g>
+<!-- B2&#45;&gt;linear2 -->
+<g id="edge10" class="edge">
+<title>B2-&gt;linear2</title>
+<path fill="none" stroke="black" d="M244.57,-29.45C257.14,-36.51 273.53,-45.72 287.85,-53.77"></path>
+<polygon fill="black" stroke="black" points="286.47,-57.01 296.9,-58.85 289.89,-50.9 286.47,-57.01"></polygon>
+</g>
+<!-- Y -->
+<g id="node12" class="node">
+<title>Y</title>
+<ellipse fill="none" stroke="black" cx="535.63" cy="-18" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="535.63" y="-14.3" font-family="Times,serif" font-size="14.00">Y</text>
+</g>
+<!-- Y&#45;&gt;loss -->
+<g id="edge11" class="edge">
+<title>Y-&gt;loss</title>
+<path fill="none" stroke="black" d="M560.46,-25.24C570.14,-28.17 581.48,-31.61 591.97,-34.8"></path>
+<polygon fill="black" stroke="black" points="591.09,-38.19 601.67,-37.74 593.12,-31.49 591.09,-38.19"></polygon>
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Consequently our backward pass will look something like this:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
+<!-- Generated by graphviz version 2.44.0 (20200408.0750)
+ -->
+<!-- Title: G Pages: 1 -->
+<svg width="662pt" height="179pt" viewbox="0.00 0.00 661.58 179.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 175)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-175 657.58,-175 657.58,4 -4,4"></polygon>
+<!-- loss -->
+<g id="node1" class="node">
+<title>loss</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-72" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="27" y="-68.3" font-family="Times,serif" font-size="14.00">loss</text>
+</g>
+<!-- Yhat -->
+<g id="node2" class="node">
+<title>Yhat</title>
+<ellipse fill="none" stroke="black" cx="117.95" cy="-72" rx="27.9" ry="18"></ellipse>
+<text text-anchor="middle" x="117.95" y="-68.3" font-family="Times,serif" font-size="14.00">Yhat</text>
+</g>
+<!-- loss&#45;&gt;Yhat -->
+<g id="edge1" class="edge">
+<title>loss-&gt;Yhat</title>
+<path fill="none" stroke="black" d="M54.21,-72C62.15,-72 71.03,-72 79.56,-72"></path>
+<polygon fill="black" stroke="black" points="79.69,-75.5 89.69,-72 79.69,-68.5 79.69,-75.5"></polygon>
+</g>
+<!-- softmax -->
+<g id="node3" class="node">
+<title>softmax</title>
+<ellipse fill="none" stroke="black" cx="221.54" cy="-72" rx="39.79" ry="18"></ellipse>
+<text text-anchor="middle" x="221.54" y="-68.3" font-family="Times,serif" font-size="14.00">softmax</text>
+</g>
+<!-- Yhat&#45;&gt;softmax -->
+<g id="edge2" class="edge">
+<title>Yhat-&gt;softmax</title>
+<path fill="none" stroke="black" d="M145.91,-72C153.76,-72 162.61,-72 171.39,-72"></path>
+<polygon fill="black" stroke="black" points="171.6,-75.5 181.6,-72 171.6,-68.5 171.6,-75.5"></polygon>
+</g>
+<!-- linear2 -->
+<g id="node4" class="node">
+<title>linear2</title>
+<ellipse fill="none" stroke="black" cx="332.28" cy="-72" rx="35.19" ry="18"></ellipse>
+<text text-anchor="middle" x="332.28" y="-68.3" font-family="Times,serif" font-size="14.00">linear2</text>
+</g>
+<!-- softmax&#45;&gt;linear2 -->
+<g id="edge3" class="edge">
+<title>softmax-&gt;linear2</title>
+<path fill="none" stroke="black" d="M261.49,-72C269.73,-72 278.47,-72 286.89,-72"></path>
+<polygon fill="black" stroke="black" points="286.93,-75.5 296.93,-72 286.93,-68.5 286.93,-75.5"></polygon>
+</g>
+<!-- relu -->
+<g id="node5" class="node">
+<title>relu</title>
+<ellipse fill="none" stroke="black" cx="430.38" cy="-126" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="430.38" y="-122.3" font-family="Times,serif" font-size="14.00">relu</text>
+</g>
+<!-- linear2&#45;&gt;relu -->
+<g id="edge4" class="edge">
+<title>linear2-&gt;relu</title>
+<path fill="none" stroke="black" d="M356.55,-85.07C369.76,-92.5 386.42,-101.86 400.47,-109.75"></path>
+<polygon fill="black" stroke="black" points="398.83,-112.85 409.26,-114.69 402.26,-106.74 398.83,-112.85"></polygon>
+</g>
+<!-- W2 -->
+<g id="node9" class="node">
+<title>W2</title>
+<ellipse fill="none" stroke="black" cx="430.38" cy="-72" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="430.38" y="-68.3" font-family="Times,serif" font-size="14.00">W2</text>
+</g>
+<!-- linear2&#45;&gt;W2 -->
+<g id="edge8" class="edge">
+<title>linear2-&gt;W2</title>
+<path fill="none" stroke="black" d="M367.44,-72C375.7,-72 384.57,-72 392.94,-72"></path>
+<polygon fill="black" stroke="black" points="393.2,-75.5 403.2,-72 393.2,-68.5 393.2,-75.5"></polygon>
+</g>
+<!-- B2 -->
+<g id="node10" class="node">
+<title>B2</title>
+<ellipse fill="none" stroke="black" cx="430.38" cy="-18" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="430.38" y="-14.3" font-family="Times,serif" font-size="14.00">B2</text>
+</g>
+<!-- linear2&#45;&gt;B2 -->
+<g id="edge9" class="edge">
+<title>linear2-&gt;B2</title>
+<path fill="none" stroke="black" d="M356.55,-58.93C369.76,-51.5 386.42,-42.14 400.47,-34.25"></path>
+<polygon fill="black" stroke="black" points="402.26,-37.26 409.26,-29.31 398.83,-31.15 402.26,-37.26"></polygon>
+</g>
+<!-- linear1 -->
+<g id="node6" class="node">
+<title>linear1</title>
+<ellipse fill="none" stroke="black" cx="528.48" cy="-126" rx="35.19" ry="18"></ellipse>
+<text text-anchor="middle" x="528.48" y="-122.3" font-family="Times,serif" font-size="14.00">linear1</text>
+</g>
+<!-- relu&#45;&gt;linear1 -->
+<g id="edge5" class="edge">
+<title>relu-&gt;linear1</title>
+<path fill="none" stroke="black" d="M457.39,-126C465.3,-126 474.23,-126 482.99,-126"></path>
+<polygon fill="black" stroke="black" points="483.14,-129.5 493.14,-126 483.14,-122.5 483.14,-129.5"></polygon>
+</g>
+<!-- W1 -->
+<g id="node7" class="node">
+<title>W1</title>
+<ellipse fill="none" stroke="black" cx="626.58" cy="-153" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="626.58" y="-149.3" font-family="Times,serif" font-size="14.00">W1</text>
+</g>
+<!-- linear1&#45;&gt;W1 -->
+<g id="edge6" class="edge">
+<title>linear1-&gt;W1</title>
+<path fill="none" stroke="black" d="M559.62,-134.47C569.8,-137.33 581.23,-140.54 591.68,-143.48"></path>
+<polygon fill="black" stroke="black" points="590.75,-146.85 601.32,-146.19 592.64,-140.11 590.75,-146.85"></polygon>
+</g>
+<!-- B1 -->
+<g id="node8" class="node">
+<title>B1</title>
+<ellipse fill="none" stroke="black" cx="626.58" cy="-99" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="626.58" y="-95.3" font-family="Times,serif" font-size="14.00">B1</text>
+</g>
+<!-- linear1&#45;&gt;B1 -->
+<g id="edge7" class="edge">
+<title>linear1-&gt;B1</title>
+<path fill="none" stroke="black" d="M559.62,-117.53C569.8,-114.67 581.23,-111.46 591.68,-108.52"></path>
+<polygon fill="black" stroke="black" points="592.64,-111.89 601.32,-105.81 590.75,-105.15 592.64,-111.89"></polygon>
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="benihime91/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/deeplearning%20python3.x%20numpy/2020/09/22/backpropagation-from-scratch.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Tips, Tricks and Tutorials for Deep-Learning enthusiasts.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/benihime91" title="benihime91"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/Ayushma75139217" title="Ayushma75139217"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
