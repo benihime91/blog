@@ -7,7 +7,7 @@
 # https://learnxinyminutes.com/docs/yaml/
 
 title: Another Deep-Learning Blog
-description: Another Deep-Learning Blog: Tips , Tricks and Tutorials for Deep-Learning enthusiasts.
+description: Tips, Tricks and Tutorials for Deep-Learning enthusiasts.
 github_username: benihime91
 # you can comment the below line out if your repo name is not different than your baseurl
 github_repo: "blog"
