@@ -16,30 +16,12 @@ github_repo: "blog"
 # Note: leave out the trailing / from this value. 
 url: "https://benihime91.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
-###########################################################
-#########  Special Instructions for baseurl ###############
-#
-#### Scenario One: If you do not have a Custom Domain #####
-#    -  if you are not using a custom domain, the baseurl *must* be set to your repo name
-# 
-####  Scenario Two: If you have a Custom Domain #####
-# 1. If your domain does NOT have a subpath, this leave this value as ""
-# 2. If your domain does have a subpath, you must preceed the value with a / and NOT have a / at the end.  
-#      For example: 
-#           "" is valid
-#           "/blog"        is valid
-#            "/blog/site/" is invalid  ( / at the end)
-#            "/blog/site"  is valid
-#            "blog/site"   is invalid  ( because doesn't begin with a /)
-#
-# 3. You must replace the parameter `baseurl` in _action_files/settings.ini with the same value as you set here but WITHOUT QUOTES.
-#
 baseurl: "/blog" # the subpath of your site, e.g. "/blog".
 
 # Github and twitter are optional:
 minima:
   social_links:
-    twitter: 
+    # twitter: 
     github: https://github.com/benihime91
 
 # Set this to true to get LaTeX math equation support
@@ -49,7 +31,7 @@ use_math: true
 show_description: true
 
 # Set this to true to display image previews on home page, if they exist
-show_image: false
+show_image: true
 
 # Set this to true to turn on annotations with hypothes.is (https://web.hypothes.is/)
 annotations: false
