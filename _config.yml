@@ -41,10 +41,9 @@ minima:
   social_links:
     # twitter: fastdotai
     github: https://github.com/benihime91
-    linkedin: https://www.linkedin.com/in/ayushman-buragohain-2145a7184
 
 # Set this to true to get LaTeX math equation support
-use_math: True
+use_math: true
 
 # Set this to true to display the summary of your blog post under your title on the Home page.
 show_description: true
