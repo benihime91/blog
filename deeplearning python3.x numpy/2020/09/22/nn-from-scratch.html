@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Creating a NeuralNetwork from scratch | Another Deep-Learning Blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Creating a NeuralNetwork from scratch" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A tutorial to code a neural network from scratch in python using numpy." />
+<meta property="og:description" content="A tutorial to code a neural network from scratch in python using numpy." />
+<link rel="canonical" href="https://benihime91.github.io/blog/deeplearning%20python3.x%20numpy/2020/09/22/nn-from-scratch.html" />
+<meta property="og:url" content="https://benihime91.github.io/blog/deeplearning%20python3.x%20numpy/2020/09/22/nn-from-scratch.html" />
+<meta property="og:site_name" content="Another Deep-Learning Blog" />
+<meta property="og:image" content="https://benihime91.github.io/blog/images/backprop.jpeg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-09-22T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"A tutorial to code a neural network from scratch in python using numpy.","url":"https://benihime91.github.io/blog/deeplearning%20python3.x%20numpy/2020/09/22/nn-from-scratch.html","@type":"BlogPosting","headline":"Creating a NeuralNetwork from scratch","dateModified":"2020-09-22T00:00:00-05:00","datePublished":"2020-09-22T00:00:00-05:00","image":"https://benihime91.github.io/blog/images/backprop.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://benihime91.github.io/blog/deeplearning%20python3.x%20numpy/2020/09/22/nn-from-scratch.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://benihime91.github.io/blog/feed.xml" title="Another Deep-Learning Blog" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Another Deep-Learning Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Creating a NeuralNetwork from scratch</h1><p class="page-description">A tutorial to code a neural network from scratch in python using numpy.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-09-22T00:00:00-05:00" itemprop="datePublished">
+        Sep 22, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#deeplearning python3.x numpy">deeplearning python3.x numpy</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/benihime91/blog/tree/master/_notebooks/2020-09-22-nn-from-scratch.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/benihime91/blog/master?filepath=_notebooks%2F2020-09-22-nn-from-scratch.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/benihime91/blog/blob/master/_notebooks/2020-09-22-nn-from-scratch.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-09-22-nn-from-scratch.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will assume that you all know what a artificial neural network is and have a little bit of knowledge about <code>forward and backward propagation</code>. Just having a simple idea is enough.</p>
+<p>If you do not know what the above terms are or would like to brush up on the topics , I would suggest this amazing <a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">youtube playlist by 3Blue1Brown</a>.
+
+<center>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/watch?v=aircAruvnKk&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" frameborder="0" allowfullscreen=""></iframe>
+</center>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Setting-up-Imports:">Setting up Imports:<a class="anchor-link" href="#Setting-up-Imports:"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Preparing-the-data">Preparing the data<a class="anchor-link" href="#Preparing-the-data"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For this blog post, we'll use one of the most famous datasets in computer vision, <a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST</a>. MNIST contains images of handwritten digits, collected by the National Institute of Standards and Technology and collated into a machine learning dataset by Yann Lecun and his colleagues. Lecun used MNIST in 1998 in <a href="http://yann.lecun.com/exdb/lenet/">Lenet-5</a>, the first computer system to demonstrate practically useful recognition of handwritten digit sequences. This was one of the most important breakthroughs in the history of AI.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Run the code below to download the <code>MNIST</code> dataset. The dataset will be downloaded to the path <code>../../Datasets/</code> or you can modify the path as you like.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget -P <span class="s2">&quot;../../Datasets/&quot;</span> http://deeplearning.net/data/mnist/mnist.pkl.gz
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fn to unzip the MNIST data and return</span>
+<span class="sd">    the data as numpy arrays</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="p">((</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">x_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">),</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="p">(</span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">x_valid</span><span class="p">,</span><span class="n">y_valid</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">x_valid</span><span class="p">,</span><span class="n">y_valid</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span> <span class="s2">&quot;../../Datasets/mnist.pkl.gz&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tots</span><span class="p">,</span><span class="n">feats</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">shape</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape of x_train:&quot;</span><span class="p">,</span><span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of examples:&quot;</span><span class="p">,</span> <span class="n">tots</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of pixel values per image:&quot;</span><span class="p">,</span> <span class="n">feats</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Shape of x_train: (50000, 784)
+Total number of examples: 50000
+Number of pixel values per image: 784
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To make our life a bit easier we are going to take only the examples that contain a 1 or 0.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zero_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># grab all the index values where 0 is present</span>
+<span class="n">one_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># grad all the index valus where 1 is present</span>
+
+<span class="c1"># grab all the 1&#39;s and 0&#39;s and make training set</span>
+<span class="n">x_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x_train</span><span class="p">[</span><span class="n">zero_mask</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">one_mask</span><span class="p">]))</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">y_train</span><span class="p">[</span><span class="n">zero_mask</span><span class="p">],</span> <span class="n">y_train</span><span class="p">[</span><span class="n">one_mask</span><span class="p">])))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>((10610, 784), (10610,))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Hence, now our training set has 10610 examples</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zero_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_valid</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># grab all the index values where 0 is present</span>
+<span class="n">one_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_valid</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># grad all the index valus where 1 is present</span>
+
+<span class="c1"># grab all the 1&#39;s and 0&#39;s and make training set</span>
+<span class="n">x_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x_valid</span><span class="p">[</span><span class="n">zero_mask</span><span class="p">],</span> <span class="n">x_valid</span><span class="p">[</span><span class="n">one_mask</span><span class="p">]))</span>
+<span class="n">y_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y_valid</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">y_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">y_valid</span><span class="p">[</span><span class="n">zero_mask</span><span class="p">],</span> <span class="n">y_valid</span><span class="p">[</span><span class="n">one_mask</span><span class="p">])))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_valid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_valid</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>((2055, 784), (2055,))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Hence, now our training set has 2055 examples</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's view one image from our dataset:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="mi">50</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;binary&quot;</span><span class="p">);</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+" />
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="mi">5000</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;binary&quot;</span><span class="p">);</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+" />
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Basic-Model-Architecture">Basic Model Architecture<a class="anchor-link" href="#Basic-Model-Architecture"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For this task we are going to use a very basic model architecture this 2 linear layers and a output layer with 10 outputs.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
+<!-- Generated by graphviz version 2.44.0 (20200408.0750)
+ -->
+<!-- Title: G Pages: 1 -->
+<svg width="698pt" height="206pt" viewBox="0.00 0.00 697.97 206.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 202)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-202 693.97,-202 693.97,4 -4,4" />
+<!-- X -->
+<g id="node1" class="node">
+<title>X</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-180" rx="27" ry="18" />
+<text text-anchor="middle" x="27" y="-176.3" font-family="Times,serif" font-size="14.00">X</text>
+</g>
+<!-- linear1 -->
+<g id="node2" class="node">
+<title>linear1</title>
+<ellipse fill="none" stroke="black" cx="125.1" cy="-126" rx="35.19" ry="18" />
+<text text-anchor="middle" x="125.1" y="-122.3" font-family="Times,serif" font-size="14.00">linear1</text>
+</g>
+<!-- X&#45;&gt;linear1 -->
+<g id="edge1" class="edge">
+<title>X&#45;&gt;linear1</title>
+<path fill="none" stroke="black" d="M48.38,-168.55C60.94,-161.49 77.34,-152.28 91.66,-144.23" />
+<polygon fill="black" stroke="black" points="93.7,-147.1 100.7,-139.15 90.27,-140.99 93.7,-147.1" />
+</g>
+<!-- relu -->
+<g id="node3" class="node">
+<title>relu</title>
+<ellipse fill="none" stroke="black" cx="223.19" cy="-126" rx="27" ry="18" />
+<text text-anchor="middle" x="223.19" y="-122.3" font-family="Times,serif" font-size="14.00">relu</text>
+</g>
+<!-- linear1&#45;&gt;relu -->
+<g id="edge2" class="edge">
+<title>linear1&#45;&gt;relu</title>
+<path fill="none" stroke="black" d="M160.25,-126C168.52,-126 177.39,-126 185.76,-126" />
+<polygon fill="black" stroke="black" points="186.01,-129.5 196.01,-126 186.01,-122.5 186.01,-129.5" />
+</g>
+<!-- linear2 -->
+<g id="node4" class="node">
+<title>linear2</title>
+<ellipse fill="none" stroke="black" cx="321.29" cy="-72" rx="35.19" ry="18" />
+<text text-anchor="middle" x="321.29" y="-68.3" font-family="Times,serif" font-size="14.00">linear2</text>
+</g>
+<!-- relu&#45;&gt;linear2 -->
+<g id="edge3" class="edge">
+<title>relu&#45;&gt;linear2</title>
+<path fill="none" stroke="black" d="M244.57,-114.55C257.14,-107.49 273.53,-98.28 287.85,-90.23" />
+<polygon fill="black" stroke="black" points="289.89,-93.1 296.9,-85.15 286.47,-86.99 289.89,-93.1" />
+</g>
+<!-- sigmoid -->
+<g id="node5" class="node">
+<title>sigmoid</title>
+<ellipse fill="none" stroke="black" cx="432.03" cy="-72" rx="39.79" ry="18" />
+<text text-anchor="middle" x="432.03" y="-68.3" font-family="Times,serif" font-size="14.00">sigmoid</text>
+</g>
+<!-- linear2&#45;&gt;sigmoid -->
+<g id="edge4" class="edge">
+<title>linear2&#45;&gt;sigmoid</title>
+<path fill="none" stroke="black" d="M356.4,-72C364.55,-72 373.4,-72 382.07,-72" />
+<polygon fill="black" stroke="black" points="382.11,-75.5 392.11,-72 382.11,-68.5 382.11,-75.5" />
+</g>
+<!-- prediction -->
+<g id="node6" class="node">
+<title>prediction</title>
+<ellipse fill="none" stroke="black" cx="553.83" cy="-72" rx="46.29" ry="18" />
+<text text-anchor="middle" x="553.83" y="-68.3" font-family="Times,serif" font-size="14.00">prediction</text>
+</g>
+<!-- sigmoid&#45;&gt;prediction -->
+<g id="edge5" class="edge">
+<title>sigmoid&#45;&gt;prediction</title>
+<path fill="none" stroke="black" d="M471.93,-72C480.08,-72 488.82,-72 497.44,-72" />
+<polygon fill="black" stroke="black" points="497.46,-75.5 507.46,-72 497.46,-68.5 497.46,-75.5" />
+</g>
+<!-- loss -->
+<g id="node7" class="node">
+<title>loss</title>
+<ellipse fill="none" stroke="black" cx="662.97" cy="-45" rx="27" ry="18" />
+<text text-anchor="middle" x="662.97" y="-41.3" font-family="Times,serif" font-size="14.00">loss</text>
+</g>
+<!-- prediction&#45;&gt;loss -->
+<g id="edge6" class="edge">
+<title>prediction&#45;&gt;loss</title>
+<path fill="none" stroke="black" d="M592.9,-62.4C604.23,-59.55 616.57,-56.44 627.65,-53.65" />
+<polygon fill="black" stroke="black" points="628.56,-57.03 637.4,-51.19 626.85,-50.24 628.56,-57.03" />
+</g>
+<!-- W1 -->
+<g id="node8" class="node">
+<title>W1</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-126" rx="27" ry="18" />
+<text text-anchor="middle" x="27" y="-122.3" font-family="Times,serif" font-size="14.00">W1</text>
+</g>
+<!-- W1&#45;&gt;linear1 -->
+<g id="edge7" class="edge">
+<title>W1&#45;&gt;linear1</title>
+<path fill="none" stroke="black" d="M54.01,-126C61.92,-126 70.84,-126 79.61,-126" />
+<polygon fill="black" stroke="black" points="79.76,-129.5 89.76,-126 79.76,-122.5 79.76,-129.5" />
+</g>
+<!-- B1 -->
+<g id="node9" class="node">
+<title>B1</title>
+<ellipse fill="none" stroke="black" cx="27" cy="-72" rx="27" ry="18" />
+<text text-anchor="middle" x="27" y="-68.3" font-family="Times,serif" font-size="14.00">B1</text>
+</g>
+<!-- B1&#45;&gt;linear1 -->
+<g id="edge8" class="edge">
+<title>B1&#45;&gt;linear1</title>
+<path fill="none" stroke="black" d="M48.38,-83.45C60.94,-90.51 77.34,-99.72 91.66,-107.77" />
+<polygon fill="black" stroke="black" points="90.27,-111.01 100.7,-112.85 93.7,-104.9 90.27,-111.01" />
+</g>
+<!-- W2 -->
+<g id="node10" class="node">
+<title>W2</title>
+<ellipse fill="none" stroke="black" cx="223.19" cy="-72" rx="27" ry="18" />
+<text text-anchor="middle" x="223.19" y="-68.3" font-family="Times,serif" font-size="14.00">W2</text>
+</g>
+<!-- W2&#45;&gt;linear2 -->
+<g id="edge9" class="edge">
+<title>W2&#45;&gt;linear2</title>
+<path fill="none" stroke="black" d="M250.2,-72C258.11,-72 267.04,-72 275.81,-72" />
+<polygon fill="black" stroke="black" points="275.96,-75.5 285.96,-72 275.96,-68.5 275.96,-75.5" />
+</g>
+<!-- B2 -->
+<g id="node11" class="node">
+<title>B2</title>
+<ellipse fill="none" stroke="black" cx="223.19" cy="-18" rx="27" ry="18" />
+<text text-anchor="middle" x="223.19" y="-14.3" font-family="Times,serif" font-size="14.00">B2</text>
+</g>
+<!-- B2&#45;&gt;linear2 -->
+<g id="edge10" class="edge">
+<title>B2&#45;&gt;linear2</title>
+<path fill="none" stroke="black" d="M244.57,-29.45C257.14,-36.51 273.53,-45.72 287.85,-53.77" />
+<polygon fill="black" stroke="black" points="286.47,-57.01 296.9,-58.85 289.89,-50.9 286.47,-57.01" />
+</g>
+<!-- target -->
+<g id="node12" class="node">
+<title>target</title>
+<ellipse fill="none" stroke="black" cx="553.83" cy="-18" rx="30.59" ry="18" />
+<text text-anchor="middle" x="553.83" y="-14.3" font-family="Times,serif" font-size="14.00">target</text>
+</g>
+<!-- target&#45;&gt;loss -->
+<g id="edge11" class="edge">
+<title>target&#45;&gt;loss</title>
+<path fill="none" stroke="black" d="M582.14,-24.88C595.94,-28.36 612.84,-32.62 627.52,-36.32" />
+<polygon fill="black" stroke="black" points="626.72,-39.73 637.27,-38.78 628.43,-32.94 626.72,-39.73" />
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Let's-take-a-deep-dive-into-what-this-network-means:">Let's take a deep dive into what this network means:<a class="anchor-link" href="#Let's-take-a-deep-dive-into-what-this-network-means:"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's take at look at all the individual components of this network:</p>
+<ul>
+<li><p><strong>Linear:</strong>
+The linear layer computes the following :</p>
+
+<pre><code> out = matmul(input,W1) + B1</code></pre>
+</li>
+<li><p><strong>ReLU:</strong> 
+The relu computes the following:</p>
+
+<pre><code>out = max(0, input)</code></pre>
+</li>
+<li><p><strong>Sigmoid:</strong> 
+The sigmoid computes the following:</p>
+
+<pre><code>out = 1/(1 + e.pow(input))</code></pre>
+</li>
+<li><p><strong>Loss:</strong> 
+For the loss we are going to use the CrossEntropy Loss which is defined by the follwoing equation:
+$$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right) + (1-y^{(i)})\log\left(1-yhat^{(i)}\right)) $$</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Now that we have our model architecture, let's create the different parts needed to assemble the model:</strong></p>
+<ul>
+<li>linear layer</li>
+<li>relu activation</li>
+<li>sigmoid activation</li>
+<li>loss</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>Backward</code> pass of out model would look something like this:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
+<!-- Generated by graphviz version 2.44.0 (20200408.0750)
+ -->
+<!-- Title: G Pages: 1 -->
+<svg width="698pt" height="179pt" viewBox="0.00 0.00 697.97 179.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 175)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-175 693.97,-175 693.97,4 -4,4" />
+<!-- prediction -->
+<g id="node1" class="node">
+<title>prediction</title>
+<ellipse fill="none" stroke="black" cx="46.15" cy="-99" rx="46.29" ry="18" />
+<text text-anchor="middle" x="46.15" y="-95.3" font-family="Times,serif" font-size="14.00">prediction</text>
+</g>
+<!-- loss -->
+<g id="node2" class="node">
+<title>loss</title>
+<ellipse fill="none" stroke="black" cx="155.29" cy="-72" rx="27" ry="18" />
+<text text-anchor="middle" x="155.29" y="-68.3" font-family="Times,serif" font-size="14.00">loss</text>
+</g>
+<!-- prediction&#45;&gt;loss -->
+<g id="edge1" class="edge">
+<title>prediction&#45;&gt;loss</title>
+<path fill="none" stroke="black" d="M85.22,-89.4C96.55,-86.55 108.89,-83.44 119.97,-80.65" />
+<polygon fill="black" stroke="black" points="120.88,-84.03 129.72,-78.19 119.16,-77.24 120.88,-84.03" />
+</g>
+<!-- sigmoid -->
+<g id="node3" class="node">
+<title>sigmoid</title>
+<ellipse fill="none" stroke="black" cx="257.94" cy="-72" rx="39.79" ry="18" />
+<text text-anchor="middle" x="257.94" y="-68.3" font-family="Times,serif" font-size="14.00">sigmoid</text>
+</g>
+<!-- loss&#45;&gt;sigmoid -->
+<g id="edge2" class="edge">
+<title>loss&#45;&gt;sigmoid</title>
+<path fill="none" stroke="black" d="M182.47,-72C190.26,-72 199.06,-72 207.81,-72" />
+<polygon fill="black" stroke="black" points="207.99,-75.5 217.99,-72 207.99,-68.5 207.99,-75.5" />
+</g>
+<!-- linear2 -->
+<g id="node4" class="node">
+<title>linear2</title>
+<ellipse fill="none" stroke="black" cx="368.68" cy="-72" rx="35.19" ry="18" />
+<text text-anchor="middle" x="368.68" y="-68.3" font-family="Times,serif" font-size="14.00">linear2</text>
+</g>
+<!-- sigmoid&#45;&gt;linear2 -->
+<g id="edge3" class="edge">
+<title>sigmoid&#45;&gt;linear2</title>
+<path fill="none" stroke="black" d="M297.89,-72C306.12,-72 314.87,-72 323.28,-72" />
+<polygon fill="black" stroke="black" points="323.33,-75.5 333.33,-72 323.33,-68.5 323.33,-75.5" />
+</g>
+<!-- relu -->
+<g id="node5" class="node">
+<title>relu</title>
+<ellipse fill="none" stroke="black" cx="466.78" cy="-126" rx="27" ry="18" />
+<text text-anchor="middle" x="466.78" y="-122.3" font-family="Times,serif" font-size="14.00">relu</text>
+</g>
+<!-- linear2&#45;&gt;relu -->
+<g id="edge4" class="edge">
+<title>linear2&#45;&gt;relu</title>
+<path fill="none" stroke="black" d="M392.94,-85.07C406.16,-92.5 422.82,-101.86 436.87,-109.75" />
+<polygon fill="black" stroke="black" points="435.23,-112.85 445.66,-114.69 438.66,-106.74 435.23,-112.85" />
+</g>
+<!-- W2 -->
+<g id="node7" class="node">
+<title>W2</title>
+<ellipse fill="none" stroke="black" cx="466.78" cy="-72" rx="27" ry="18" />
+<text text-anchor="middle" x="466.78" y="-68.3" font-family="Times,serif" font-size="14.00">W2</text>
+</g>
+<!-- linear2&#45;&gt;W2 -->
+<g id="edge6" class="edge">
+<title>linear2&#45;&gt;W2</title>
+<path fill="none" stroke="black" d="M403.83,-72C412.1,-72 420.97,-72 429.34,-72" />
+<polygon fill="black" stroke="black" points="429.59,-75.5 439.59,-72 429.59,-68.5 429.59,-75.5" />
+</g>
+<!-- B2 -->
+<g id="node8" class="node">
+<title>B2</title>
+<ellipse fill="none" stroke="black" cx="466.78" cy="-18" rx="27" ry="18" />
+<text text-anchor="middle" x="466.78" y="-14.3" font-family="Times,serif" font-size="14.00">B2</text>
+</g>
+<!-- linear2&#45;&gt;B2 -->
+<g id="edge7" class="edge">
+<title>linear2&#45;&gt;B2</title>
+<path fill="none" stroke="black" d="M392.94,-58.93C406.16,-51.5 422.82,-42.14 436.87,-34.25" />
+<polygon fill="black" stroke="black" points="438.66,-37.26 445.66,-29.31 435.23,-31.15 438.66,-37.26" />
+</g>
+<!-- linear1 -->
+<g id="node6" class="node">
+<title>linear1</title>
+<ellipse fill="none" stroke="black" cx="564.88" cy="-126" rx="35.19" ry="18" />
+<text text-anchor="middle" x="564.88" y="-122.3" font-family="Times,serif" font-size="14.00">linear1</text>
+</g>
+<!-- relu&#45;&gt;linear1 -->
+<g id="edge5" class="edge">
+<title>relu&#45;&gt;linear1</title>
+<path fill="none" stroke="black" d="M493.78,-126C501.69,-126 510.62,-126 519.39,-126" />
+<polygon fill="black" stroke="black" points="519.54,-129.5 529.54,-126 519.54,-122.5 519.54,-129.5" />
+</g>
+<!-- W1 -->
+<g id="node9" class="node">
+<title>W1</title>
+<ellipse fill="none" stroke="black" cx="662.97" cy="-153" rx="27" ry="18" />
+<text text-anchor="middle" x="662.97" y="-149.3" font-family="Times,serif" font-size="14.00">W1</text>
+</g>
+<!-- linear1&#45;&gt;W1 -->
+<g id="edge8" class="edge">
+<title>linear1&#45;&gt;W1</title>
+<path fill="none" stroke="black" d="M596.02,-134.47C606.2,-137.33 617.62,-140.54 628.07,-143.48" />
+<polygon fill="black" stroke="black" points="627.14,-146.85 637.72,-146.19 629.04,-140.11 627.14,-146.85" />
+</g>
+<!-- B1 -->
+<g id="node10" class="node">
+<title>B1</title>
+<ellipse fill="none" stroke="black" cx="662.97" cy="-99" rx="27" ry="18" />
+<text text-anchor="middle" x="662.97" y="-95.3" font-family="Times,serif" font-size="14.00">B1</text>
+</g>
+<!-- linear1&#45;&gt;B1 -->
+<g id="edge9" class="edge">
+<title>linear1&#45;&gt;B1</title>
+<path fill="none" stroke="black" d="M596.02,-117.53C606.2,-114.67 617.62,-111.46 628.07,-108.52" />
+<polygon fill="black" stroke="black" points="629.04,-111.89 637.72,-105.81 627.14,-105.15 629.04,-111.89" />
+</g>
+<!-- target -->
+<g id="node11" class="node">
+<title>target</title>
+<ellipse fill="none" stroke="black" cx="46.15" cy="-45" rx="30.59" ry="18" />
+<text text-anchor="middle" x="46.15" y="-41.3" font-family="Times,serif" font-size="14.00">target</text>
+</g>
+<!-- target&#45;&gt;loss -->
+<g id="edge10" class="edge">
+<title>target&#45;&gt;loss</title>
+<path fill="none" stroke="black" d="M74.46,-51.88C88.26,-55.36 105.16,-59.62 119.84,-63.32" />
+<polygon fill="black" stroke="black" points="119.04,-66.73 129.59,-65.78 120.75,-59.94 119.04,-66.73" />
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Let's first try to make some sense of what is happening in the backward and forward pass of our model:</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote><p><strong>On paper our forward pass would look like this is pseudo-code</strong>:```pythoninputs = x # original inputs
+targets = y # original targets</p>
+</blockquote>
+<p>z1 = inputs @ w2 + b2
+a1 = relu(z1)</p>
+<p>z2 = a1 @ w2 + b2
+a2 = sigmoid(z2) # this is our model prediction</p>
+<p>loss = loss_fn(a2, targets)
+```</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote><p><strong>Consequently our backward pass in psuedo code would be something like this</strong>:```python</p>
+<h1 id="let-us-assume-that-the-grad()-computes-the-gradeients-of-to-given-inputs">let us assume that the <code>grad()</code> computes the gradeients of to given inputs<a class="anchor-link" href="#let-us-assume-that-the-grad()-computes-the-gradeients-of-to-given-inputs"> </a></h1>
+</blockquote>
+<p>def grad(input1, input2):
+    """
+    computes the gradient of input1 wrt to input2
+    """
+    g = ... # the gradient of input1 wrt to input2, we will worry about this afterwards
+    return g</p>
+<h1 id="--------------------">--------------------<a class="anchor-link" href="#--------------------"> </a></h1><h1 id="Backward-Pass-:">Backward Pass :<a class="anchor-link" href="#Backward-Pass-:"> </a></h1><h1 id="---------------------">---------------------<a class="anchor-link" href="#---------------------"> </a></h1><p>dL  = grad(loss, a2) # this is the gradient of the loss wrt output of the previous layer
+da2 = grad(a2, z2) # this is the gradient of a2 wrt z2</p>
+<h1 id="this-is-the-gradient-of-the-weights-w2-wrt-loss">this is the gradient of the weights w2 wrt loss<a class="anchor-link" href="#this-is-the-gradient-of-the-weights-w2-wrt-loss"> </a></h1><h1 id="this-is-used-to-update-the-parameters">this is used to update the parameters<a class="anchor-link" href="#this-is-used-to-update-the-parameters"> </a></h1><p>dw2 = grad(w2, loss)
+dw2 = grad(loss, a2) <em> grad(a2, z2) </em> grad(z2, w2) # using chain rule
+dw2 = dL <em> da2 </em> grad(z2, w2)
+dw2 = grad_of_prev_layers * grad(z2, w2)</p>
+<h1 id="this-is-the-gradient-of-the-bias-b2-wrt-loss">this is the gradient of the bias b2 wrt loss<a class="anchor-link" href="#this-is-the-gradient-of-the-bias-b2-wrt-loss"> </a></h1><p>db2 = grad(b2, loss)
+db2 = grad(loss, a2) <em> grad(a2, z2) </em> grad(z2, b2) # using chain rule
+db2 = dL <em> da2 </em> grad(z2, b2)
+db2 = grad_of_prev_layers * grad(z2, b2)</p>
+<p>dz2 = grad(z2, a1) # this is the gradient of z2 wrt a1
+da1 = grad(a1, z1) # this the gradient of a1 wrt to z1</p>
+<h1 id="this-is-the-gradient-of-the-weights-w1-wrt-loss">this is the gradient of the weights w1 wrt loss<a class="anchor-link" href="#this-is-the-gradient-of-the-weights-w1-wrt-loss"> </a></h1><p>dw1 = grad(w1, loss)
+dw1 = grad(loss, a2) <em> grad(a2, z2) </em> grad(z2, a1) <em> grad(a1, z1) </em> grad(z1, w1) # using chain rule
+dw1 = dL <em> da2 </em> dz2 <em> da1 </em> grad(z1, w1)
+dw1 = grad_of_prev_layers * grad(z1, w1)</p>
+<h1 id="this-is-the-gradient-of-the-bias-b1-wrt-loss">this is the gradient of the bias b1 wrt loss<a class="anchor-link" href="#this-is-the-gradient-of-the-bias-b1-wrt-loss"> </a></h1><p>db1 = grad(b1, loss)
+db1 = grad(loss, a2) <em> grad(a2, z2) </em> grad(z2, a1) <em> grad(a1, z1) </em> grad(z1, b1)  # using chain rule
+db1 = dL <em> da2 </em> dz2 <em> da1 </em> grad(z1, b1)
+db1 = grad_of_prev_layers * grad(z1, b1)</p>
+<h1 id="--------------------">--------------------<a class="anchor-link" href="#--------------------"> </a></h1><h1 id="Update-parameters-:">Update parameters :<a class="anchor-link" href="#Update-parameters-:"> </a></h1><h1 id="---------------------">---------------------<a class="anchor-link" href="#---------------------"> </a></h1><h1 id="since-we-now-have-all-the-required-gradients-we-can-now-perform-the-update-step">since we now have all the required gradients we can now perform the update step<a class="anchor-link" href="#since-we-now-have-all-the-required-gradients-we-can-now-perform-the-update-step"> </a></h1><p>w1 -= learning_rate <em> dw1
+b1 -= learning_rate </em> db1</p>
+<p>w2 -= learning_rate <em> dw2
+b2 -= learning_rate </em> db2
+```</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Linear-Layer">The Linear Layer<a class="anchor-link" href="#The-Linear-Layer"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Forward-Propagation">Forward Propagation<a class="anchor-link" href="#Forward-Propagation"> </a></h3><p>In this step the outputs are calculated.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
+<!-- Generated by graphviz version 2.44.0 (20200408.0750)
+ -->
+<!-- Title: G Pages: 1 -->
+<svg width="386pt" height="125pt" viewBox="0.00 0.00 385.78 125.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 121)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-121 381.78,-121 381.78,4 -4,4" />
+<!-- Input -->
+<g id="node1" class="node">
+<title>Input</title>
+<ellipse fill="none" stroke="black" cx="36.4" cy="-99" rx="29.5" ry="18" />
+<text text-anchor="middle" x="36.4" y="-95.3" font-family="Times,serif" font-size="14.00">Input</text>
+</g>
+<!-- matmul -->
+<g id="node2" class="node">
+<title>matmul</title>
+<ellipse fill="none" stroke="black" cx="147.14" cy="-72" rx="38.19" ry="18" />
+<text text-anchor="middle" x="147.14" y="-68.3" font-family="Times,serif" font-size="14.00">matmul</text>
+</g>
+<!-- Input&#45;&gt;matmul -->
+<g id="edge1" class="edge">
+<title>Input&#45;&gt;matmul</title>
+<path fill="none" stroke="black" d="M63.72,-92.46C75.44,-89.55 89.56,-86.05 102.77,-82.77" />
+<polygon fill="black" stroke="black" points="103.78,-86.12 112.64,-80.32 102.09,-79.33 103.78,-86.12" />
+</g>
+<!-- add -->
+<g id="node3" class="node">
+<title>add</title>
+<ellipse fill="none" stroke="black" cx="248.49" cy="-45" rx="27" ry="18" />
+<text text-anchor="middle" x="248.49" y="-41.3" font-family="Times,serif" font-size="14.00">add</text>
+</g>
+<!-- matmul&#45;&gt;add -->
+<g id="edge2" class="edge">
+<title>matmul&#45;&gt;add</title>
+<path fill="none" stroke="black" d="M180.67,-63.16C191.13,-60.32 202.75,-57.16 213.33,-54.28" />
+<polygon fill="black" stroke="black" points="214.35,-57.63 223.08,-51.63 212.51,-50.88 214.35,-57.63" />
+</g>
+<!-- output -->
+<g id="node4" class="node">
+<title>output</title>
+<ellipse fill="none" stroke="black" cx="344.63" cy="-45" rx="33.29" ry="18" />
+<text text-anchor="middle" x="344.63" y="-41.3" font-family="Times,serif" font-size="14.00">output</text>
+</g>
+<!-- add&#45;&gt;output -->
+<g id="edge3" class="edge">
+<title>add&#45;&gt;output</title>
+<path fill="none" stroke="black" d="M275.71,-45C283.61,-45 292.49,-45 301.16,-45" />
+<polygon fill="black" stroke="black" points="301.17,-48.5 311.17,-45 301.17,-41.5 301.17,-48.5" />
+</g>
+<!-- Weight -->
+<g id="node5" class="node">
+<title>Weight</title>
+<ellipse fill="none" stroke="black" cx="36.4" cy="-45" rx="36.29" ry="18" />
+<text text-anchor="middle" x="36.4" y="-41.3" font-family="Times,serif" font-size="14.00">Weight</text>
+</g>
+<!-- Weight&#45;&gt;matmul -->
+<g id="edge4" class="edge">
+<title>Weight&#45;&gt;matmul</title>
+<path fill="none" stroke="black" d="M69.14,-52.88C79.61,-55.48 91.43,-58.42 102.61,-61.19" />
+<polygon fill="black" stroke="black" points="102.1,-64.67 112.65,-63.68 103.79,-57.88 102.1,-64.67" />
+</g>
+<!-- Bias -->
+<g id="node6" class="node">
+<title>Bias</title>
+<ellipse fill="none" stroke="black" cx="147.14" cy="-18" rx="27" ry="18" />
+<text text-anchor="middle" x="147.14" y="-14.3" font-family="Times,serif" font-size="14.00">Bias</text>
+</g>
+<!-- Bias&#45;&gt;add -->
+<g id="edge5" class="edge">
+<title>Bias&#45;&gt;add</title>
+<path fill="none" stroke="black" d="M172.44,-24.6C184.71,-27.94 199.8,-32.04 213.22,-35.69" />
+<polygon fill="black" stroke="black" points="212.52,-39.12 223.09,-38.37 214.36,-32.37 212.52,-39.12" />
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Backward-Propagation:">Backward Propagation:<a class="anchor-link" href="#Backward-Propagation:"> </a></h3><p>In this step the gradients of the output wrt to the inputs, weights and bias are calculated.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
+<!-- Generated by graphviz version 2.44.0 (20200408.0750)
+ -->
+<!-- Title: G Pages: 1 -->
+<svg width="437pt" height="125pt" viewBox="0.00 0.00 436.78 125.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 121)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-121 432.78,-121 432.78,4 -4,4" />
+<!-- output -->
+<g id="node1" class="node">
+<title>output</title>
+<ellipse fill="none" stroke="black" cx="33.15" cy="-33" rx="33.29" ry="18" />
+<text text-anchor="middle" x="33.15" y="-29.3" font-family="Times,serif" font-size="14.00">output</text>
+</g>
+<!-- add -->
+<g id="node2" class="node">
+<title>add</title>
+<ellipse fill="none" stroke="black" cx="130.29" cy="-33" rx="27" ry="18" />
+<text text-anchor="middle" x="130.29" y="-29.3" font-family="Times,serif" font-size="14.00">add</text>
+</g>
+<!-- output&#45;&gt;add -->
+<g id="edge1" class="edge">
+<title>output&#45;&gt;add</title>
+<path fill="none" stroke="black" d="M66.36,-33C74.87,-33 84.11,-33 92.83,-33" />
+<polygon fill="black" stroke="black" points="93.11,-36.5 103.11,-33 93.11,-29.5 93.11,-36.5" />
+</g>
+<!-- matmul -->
+<g id="node3" class="node">
+<title>matmul</title>
+<ellipse fill="none" stroke="black" cx="256.64" cy="-72" rx="38.19" ry="18" />
+<text text-anchor="middle" x="256.64" y="-68.3" font-family="Times,serif" font-size="14.00">matmul</text>
+</g>
+<!-- add&#45;&gt;matmul -->
+<g id="edge2" class="edge">
+<title>add&#45;&gt;matmul</title>
+<path fill="none" stroke="black" d="M154.98,-40.43C171.73,-45.68 194.64,-52.87 214.37,-59.06" />
+<polygon fill="black" stroke="black" points="213.47,-62.44 224.06,-62.09 215.56,-55.76 213.47,-62.44" />
+</g>
+<!-- Bias -->
+<g id="node6" class="node">
+<title>Bias</title>
+<ellipse fill="none" stroke="black" cx="256.64" cy="-18" rx="27" ry="18" />
+<text text-anchor="middle" x="256.64" y="-14.3" font-family="Times,serif" font-size="14.00">Bias</text>
+</g>
+<!-- add&#45;&gt;Bias -->
+<g id="edge5" class="edge">
+<title>add&#45;&gt;Bias</title>
+<path fill="none" stroke="black" d="M157.06,-29.89C175.23,-27.7 199.81,-24.73 219.88,-22.31" />
+<polygon fill="black" stroke="black" points="220.4,-25.78 229.91,-21.1 219.56,-18.83 220.4,-25.78" />
+<text text-anchor="middle" x="187.79" y="-31.8" font-family="Times,serif" font-size="14.00">grad</text>
+</g>
+<!-- Input -->
+<g id="node4" class="node">
+<title>Input</title>
+<ellipse fill="none" stroke="black" cx="392.38" cy="-99" rx="29.5" ry="18" />
+<text text-anchor="middle" x="392.38" y="-95.3" font-family="Times,serif" font-size="14.00">Input</text>
+</g>
+<!-- matmul&#45;&gt;Input -->
+<g id="edge3" class="edge">
+<title>matmul&#45;&gt;Input</title>
+<path fill="none" stroke="black" d="M292.08,-78.95C311.11,-82.79 334.76,-87.57 354.2,-91.49" />
+<polygon fill="black" stroke="black" points="353.73,-94.97 364.23,-93.52 355.12,-88.11 353.73,-94.97" />
+<text text-anchor="middle" x="325.49" y="-90.8" font-family="Times,serif" font-size="14.00">grad</text>
+</g>
+<!-- Weight -->
+<g id="node5" class="node">
+<title>Weight</title>
+<ellipse fill="none" stroke="black" cx="392.38" cy="-45" rx="36.29" ry="18" />
+<text text-anchor="middle" x="392.38" y="-41.3" font-family="Times,serif" font-size="14.00">Weight</text>
+</g>
+<!-- matmul&#45;&gt;Weight -->
+<g id="edge4" class="edge">
+<title>matmul&#45;&gt;Weight</title>
+<path fill="none" stroke="black" d="M292.08,-65.05C309.32,-61.57 330.36,-57.32 348.62,-53.63" />
+<polygon fill="black" stroke="black" points="349.33,-57.06 358.44,-51.65 347.95,-50.2 349.33,-57.06" />
+<text text-anchor="middle" x="325.49" y="-63.8" font-family="Times,serif" font-size="14.00">grad</text>
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Coding-up-the-Linar-Layer:">Coding up the Linar Layer:<a class="anchor-link" href="#Coding-up-the-Linar-Layer:"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">linear_forward</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement the linear part of a layer&#39;s forward propagation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    inp : activations from previous layer (or input data): (size of previous layer, number of examples)</span>
+<span class="sd">    W : weights matrix: numpy array of shape (size of current layer, size of previous layer)</span>
+<span class="sd">    b : bias vector, numpy array of shape (size of the current layer, 1)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    Z : the input of the activation function, also called pre-activation parameter </span>
+<span class="sd">    cache : a python tuple containing &quot;A&quot;, &quot;W&quot; and &quot;b&quot; ; stored for computing the backward pass efficiently</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">@</span> <span class="n">w</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">z</span><span class="p">,</span> <span class="n">cache</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">linear_backward</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="n">cache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement the linear portion of backward propagation for a single layer (layer l)</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">    grad -- Gradient of the cost with respect to the linear output (of current layer l)</span>
+<span class="sd">    cache -- tuple of values (A_prev, W, b) coming from the forward propagation in the current layer</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    dA_prev -- Gradient of cost wrt to the activation of the previous or the input of the current of layer</span>
+<span class="sd">    dW -- Gradient of the cost with respect to W</span>
+<span class="sd">    db -- Gradient of the cost with respect to b</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A_prev</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">cache</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">A_prev</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+<span class="c1">#     dW = 1/m * np.dot(dZ, cache[0].T)</span>
+<span class="c1">#     db = 1/m * np.sum(dZ, axis=1, keepdims=True)</span>
+    <span class="c1"># gradient of cost wrt to the activation of the previous or the input of the current of layer</span>
+    <span class="n">dA_prev</span> <span class="o">=</span> <span class="n">grad</span> <span class="o">@</span> <span class="n">W</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">dW</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dZ</span><span class="p">,</span> <span class="n">cache</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">dA_prev</span><span class="p">,</span> <span class="n">dW</span><span class="p">,</span> <span class="n">db</span>
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="benihime91/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/deeplearning%20python3.x%20numpy/2020/09/22/nn-from-scratch.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Tips, Tricks and Tutorials for Deep-Learning enthusiasts.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/benihime91" title="benihime91"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/Ayushma75139217" title="Ayushma75139217"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
