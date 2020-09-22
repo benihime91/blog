@@ -815,8 +815,8 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Consequently our backward pass in psuedo code would be something like this :<br />
-(Let us assume that the <code>grad(inp, out)</code> computes the gradients of <code>inp</code> wrt <code>out</code>)</p>
+<p>Consequently our backward pass in psuedo code would be something like this :</p>
+<p>(Let us assume that the <code>grad(inp, out)</code> computes the gradients of <code>inp</code> wrt <code>out</code>)</p>
 <div class="highlight"><pre><span></span><span class="c1"># gradient of loss wrt output of the previous activation layer</span>
 <span class="n">da2</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span> 
 
