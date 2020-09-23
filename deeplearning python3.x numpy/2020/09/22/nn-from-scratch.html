@@ -94,7 +94,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      16 min read
+      17 min read
     
 </span></p>
 
@@ -181,17 +181,18 @@ window.onload = wrap_img;
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-
-
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     
@@ -1113,7 +1114,7 @@ the gradients of the <code>loss wrt to the input-of-relu(z)</code> i.e, <code>dz
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Loss_function-:">Loss_function :<a class="anchor-link" href="#Loss_function-:"> </a></h2>
+<h2 id="Loss-function-:"><code>Loss</code> function :<a class="anchor-link" href="#Loss-function-:"> </a></h2>
 </div>
 </div>
 </div>
@@ -1178,7 +1179,11 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Model:">Model:<a class="anchor-link" href="#Model:"> </a></h2><p><strong>Let's go over the architecture that we are going to use for our neural netwok:</strong></p>
-<p>Our model is going to have 2 hidden layers and a output layer. The <code>hidden layers</code> are going to have <code>16 units</code> each followed by a <code>ReLU</code> activation layer and the <code>output layer</code> is going to have <code>1 unit</code> followed by a <code>Sigmoid</code> unit. The ouput layer is going to predict the <code>input</code> is either <code>0</code> or <code>1</code>.</p>
+<ul>
+<li>Our model is going to have 2 hidden layers and a output layer. </li>
+<li>The <code>hidden layers</code> are going to have <code>16 units</code> each followed by a <code>ReLU</code> activation layer and the <code>output layer</code> is going to have <code>1 unit</code> followed by a <code>Sigmoid</code> unit. </li>
+<li>The ouput layer is going to predict the <code>input</code> is either <code>0</code> or <code>1</code>. </li>
+</ul>
 
 </div>
 </div>
@@ -1190,31 +1195,41 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>These are our inputs and targets:</strong></p>
+
+</div>
+</div>
+</div>
     
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape of Inputs:&quot;</span><span class="p">,</span> <span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape of Targets:&quot;</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
+    </details>
 <div class="output_wrapper">
 <div class="output">
 
 <div class="output_area">
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>((10610, 784), (10610, 1))</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Shape of Inputs: (10610, 784)
+Shape of Targets: (10610, 1)
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -1223,6 +1238,13 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Initialize model parameters:</strong></p>
+
+</div>
+</div>
+</div>
     
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1250,25 +1272,16 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>((784, 16), (1, 16), (16, 16), (1, 16), (16, 1), (1, 1))</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Instaniating the layers needed to construct our model:</strong></p>
+
+</div>
+</div>
+</div>
     
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1329,43 +1342,6 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Loss: 0.6954586218304929
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predictions: &quot;</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Predictions:  [[0.50221048]
- [0.5016568 ]
- [0.50445   ]
- ...
- [0.5006608 ]
- [0.49939964]
- [0.49894181]]
 </pre>
 </div>
 </div>
@@ -1440,6 +1416,14 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>So, this is how our training our model is going to look we first calculate the <code>loss</code> of the model during the <code>forward pass</code> , then we calculate the gradients of the <code>loss</code> wrt to the <code>parameters</code> of the model. After which these <code>gradients</code> are used to <code>update the model parameters</code>. We continue this workflow for a certain number of <code>iterations</code> or until our <code>loss</code> reaches the desired value.</p>
+<p>Let's code up a class which will make this steps easir to achieve.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Putting-it-all-together:">Putting it all together:<a class="anchor-link" href="#Putting-it-all-together:"> </a></h3>
 </div>
 </div>
@@ -1471,23 +1455,18 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(784, 16) (1, 16) (16, 16) (1, 16) (16, 1) (1, 1)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For our convenice, we will create a <code>Model</code> class .</p>
+<p>This <code>Model</code> class will store all the parameters for our neural-network.
+The <code>forward</code> method will compute the <code>forward pass</code> of the network to generate the <code>loss</code> (and or <code>predictions</code>) of the model. The <code>backward</code> method will compute the <code>backward pass</code> of the network to get the gradinets of the <code>loss</code> wrt to the <code>parameters</code> of the model. Finally the <code>update</code> method will update the parameters of the model.</p>
+
+</div>
+</div>
+</div>
     
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1503,18 +1482,21 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 <span class="sd">        The `backward` method computes the backward step propagation of the model</span>
 <span class="sd">        The `update_step` method updates the parameters of the model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin1</span>    <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span><span class="n">b1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">relu1</span>   <span class="o">=</span> <span class="n">RelU</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin2</span>    <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span><span class="n">b2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">relu2</span>   <span class="o">=</span> <span class="n">RelU</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin3</span>    <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">w3</span><span class="p">,</span><span class="n">b3</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span> <span class="o">=</span> <span class="n">Sigmoid</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">CELoss</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin1</span>    <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span><span class="n">b1</span><span class="p">)</span> <span class="c1"># 1st linear layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relu1</span>   <span class="o">=</span> <span class="n">RelU</span><span class="p">()</span>        <span class="c1"># 1st activation layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin2</span>    <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span><span class="n">b2</span><span class="p">)</span> <span class="c1"># 2nd linear layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relu2</span>   <span class="o">=</span> <span class="n">RelU</span><span class="p">()</span>        <span class="c1"># 2nd activation layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin3</span>    <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">w3</span><span class="p">,</span><span class="n">b3</span><span class="p">)</span> <span class="c1"># 3rd linear layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span> <span class="o">=</span> <span class="n">Sigmoid</span><span class="p">()</span>     <span class="c1"># 3rd activation layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">CELoss</span><span class="p">()</span>      <span class="c1"># loss_fn</span>
+        
+        <span class="c1"># learning_rate to update model parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lr</span>      <span class="o">=</span> <span class="n">learning_rate</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">losses</span>  <span class="o">=</span> <span class="p">[]</span> <span class="c1"># stores the loss at each iteration</span>
+        <span class="c1"># stores the loss at each iteration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">losses</span>  <span class="o">=</span> <span class="p">[]</span> 
 
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">calc_loss</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">calc_loss</span><span class="o">=</span><span class="kc">True</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computs the forward step for out model</span>
 <span class="sd">        Returns the loss and the prediction of the model</span>
@@ -1550,7 +1532,7 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
         <span class="bp">self</span><span class="o">.</span><span class="n">dbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">db1</span><span class="p">,</span> <span class="n">db2</span><span class="p">,</span> <span class="n">db3</span><span class="p">]</span>
 
 
-    <span class="k">def</span> <span class="nf">update_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Performs the update step</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1583,7 +1565,7 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_train</span><span class="p">)</span>
     <span class="n">nn</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-    <span class="n">nn</span><span class="o">.</span><span class="n">update_step</span><span class="p">()</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loss after interation </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -1597,56 +1579,56 @@ $$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right)
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Loss after interation 0 is 0.6935
-Loss after interation 1 is 0.6829
-Loss after interation 2 is 0.6675
-Loss after interation 3 is 0.6481
-Loss after interation 4 is 0.6228
-Loss after interation 5 is 0.5924
-Loss after interation 6 is 0.5488
-Loss after interation 7 is 0.5149
-Loss after interation 8 is 0.4527
-Loss after interation 9 is 0.3746
-Loss after interation 10 is 0.3095
-Loss after interation 11 is 0.2433
-Loss after interation 12 is 0.2016
-Loss after interation 13 is 0.1698
-Loss after interation 14 is 0.1448
-Loss after interation 15 is 0.1250
-Loss after interation 16 is 0.1091
-Loss after interation 17 is 0.0963
-Loss after interation 18 is 0.0859
-Loss after interation 19 is 0.0773
-Loss after interation 20 is 0.0702
-Loss after interation 21 is 0.0641
-Loss after interation 22 is 0.0590
-Loss after interation 23 is 0.0546
-Loss after interation 24 is 0.0509
-Loss after interation 25 is 0.0476
-Loss after interation 26 is 0.0447
-Loss after interation 27 is 0.0421
-Loss after interation 28 is 0.0399
-Loss after interation 29 is 0.0378
-Loss after interation 30 is 0.0360
-Loss after interation 31 is 0.0344
-Loss after interation 32 is 0.0329
-Loss after interation 33 is 0.0316
-Loss after interation 34 is 0.0304
-Loss after interation 35 is 0.0292
-Loss after interation 36 is 0.0282
-Loss after interation 37 is 0.0273
-Loss after interation 38 is 0.0264
-Loss after interation 39 is 0.0256
-Loss after interation 40 is 0.0248
-Loss after interation 41 is 0.0241
-Loss after interation 42 is 0.0234
-Loss after interation 43 is 0.0228
-Loss after interation 44 is 0.0222
-Loss after interation 45 is 0.0217
-Loss after interation 46 is 0.0212
-Loss after interation 47 is 0.0207
-Loss after interation 48 is 0.0202
-Loss after interation 49 is 0.0198
+<pre>Loss after interation 0 is 0.6923
+Loss after interation 1 is 0.6912
+Loss after interation 2 is 0.6885
+Loss after interation 3 is 0.6862
+Loss after interation 4 is 0.6840
+Loss after interation 5 is 0.6818
+Loss after interation 6 is 0.6795
+Loss after interation 7 is 0.6764
+Loss after interation 8 is 0.6728
+Loss after interation 9 is 0.6686
+Loss after interation 10 is 0.6635
+Loss after interation 11 is 0.6574
+Loss after interation 12 is 0.6502
+Loss after interation 13 is 0.6417
+Loss after interation 14 is 0.6317
+Loss after interation 15 is 0.6198
+Loss after interation 16 is 0.6059
+Loss after interation 17 is 0.5898
+Loss after interation 18 is 0.5712
+Loss after interation 19 is 0.5500
+Loss after interation 20 is 0.5261
+Loss after interation 21 is 0.4995
+Loss after interation 22 is 0.4705
+Loss after interation 23 is 0.4394
+Loss after interation 24 is 0.4069
+Loss after interation 25 is 0.3736
+Loss after interation 26 is 0.3405
+Loss after interation 27 is 0.3085
+Loss after interation 28 is 0.2782
+Loss after interation 29 is 0.2502
+Loss after interation 30 is 0.2248
+Loss after interation 31 is 0.2020
+Loss after interation 32 is 0.1819
+Loss after interation 33 is 0.1643
+Loss after interation 34 is 0.1488
+Loss after interation 35 is 0.1353
+Loss after interation 36 is 0.1235
+Loss after interation 37 is 0.1131
+Loss after interation 38 is 0.1041
+Loss after interation 39 is 0.0961
+Loss after interation 40 is 0.0891
+Loss after interation 41 is 0.0829
+Loss after interation 42 is 0.0774
+Loss after interation 43 is 0.0725
+Loss after interation 44 is 0.0681
+Loss after interation 45 is 0.0642
+Loss after interation 46 is 0.0606
+Loss after interation 47 is 0.0574
+Loss after interation 48 is 0.0545
+Loss after interation 49 is 0.0519
 </pre>
 </div>
 </div>
@@ -1685,7 +1667,7 @@ Loss after interation 49 is 0.0198
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYIAAAEWCAYAAABrDZDcAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADh0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uMy4yLjIsIGh0dHA6Ly9tYXRwbG90bGliLm9yZy+WH4yJAAAgAElEQVR4nO3deZQc5X3u8e9TPSONdglpAG1oQ9sIsdjDYrMYMLbBsYEkNhZe4i0hzgnOYmfBSY6TkPieOD7Xce65ODZxMHauMSF2cOQYGzA72GANIBZJyAgZkMQioX2Xpvt3/6gaaIaRNNJMTU13P59z+nTX0lW/Go36mXrf6rcUEZiZWeNKii7AzMyK5SAwM2twDgIzswbnIDAza3AOAjOzBucgMDNrcA4CszolaZmkc4uuwwY/B4EVStKzki4ouo7+JuluSb+dvT5X0tqc93e9pL+vnhcRCyLi7jz3a/XBQWDWR5JKOW+/Kc/tmzkIbFCSNFTSVyS9kD2+ImlotmyCpP+RtEXSJkn3SUqyZX8uaZ2k7ZJWSnr7AbZ/vaSvSbo9W/ceSdOqls/Llm3KtnNZt/f+i6RbJO0EzjvIcYwAfgxMkrQje0ySlEi6StIzkjZKuknSUdl7pksKSZ+U9DxwZzb/PyW9JGmrpHslLcjmXwF8CPizbPs/zOa/erZ1iJ/nuZLWSvqspPWSXpT08SP9t7Pa4yCwweovgTOAk4GTgNOAv8qWfRZYC7QCxwB/AYSkucCVwKkRMQp4F/DsQfbxIeDvgAnAUuA78OqH9+3ADcDRwCLgq5Laqt77QeALwCjg/gPtICJ2AhcBL0TEyOzxAvBp4FLgbcAkYDNwTbe3vw2Ynx0HpIEyO6vpka56I+La7PU/Ztt/bw+lHOznCXAsMAaYDHwSuEbSuAMdl9UXB4ENVh8Cro6I9RGxAfhb4CPZsv3ARGBaROyPiPsiHTSrDAwF2iQ1R8SzEfHMQfbxo4i4NyL2kn5QvkXSVOA9wLMR8c2I6IyIR4HvA++veu9/R8QDEVGJiD1HcHyfAv4yItZm+/8b4H3dmoH+JiJ2RsRugIi4LiK2V61/kqQxvdzfwX6ekP5Mr85+nrcAO4C5R3BcVoMcBDZYTQKeq5p+LpsH8CVgFXCbpNWSrgKIiFXAH5F+SK6XdKOkSRzYmq4XEbED2JTtYxpwetb0tEXSFtIP0mN7eu8RmgbcXLX9FaRBdkxP+5BUkvQPWVPSNl4705nQy/0d7OcJsDEiOqumdwEje7ltq3EOAhusXiD9sOxyXDaP7K/iz0bETOBi4DNdfQERcUNEnJW9N4AvHmQfU7teSBoJHJXtYw1wT0SMrXqMjIjfq3rv4Qzb29O6a4CLuu2jJSLWHeB9HwQuAS4gbcKZ3lV6L+s54M/TzEFgg0GzpJaqRxPwXeCvJLVKmgB8Hvh/AJLeI+l4SQK2kv4lXZE0V9L5WSfoHmA3UDnIft8t6SxJQ0j7Ch6MiDXA/wBzJH1EUnP2OFXS/CM8vpeB8d2acb4GfKGrgzo7zksOso1RwF5gIzAc+F897GPmQd5/wJ+nmYPABoNbSD+0ux5/A/w90AE8DjxB2jnadZ38bOCnpO3YPwe+GhF3kfYP/APwCvASaafq5w6y3xuAvyZtEnoz8GFIzziAd5J2Er+QbeuL2fYPW0Q8RfpBvDprCpoE/DOwmLR5azvwIHD6QTbzbdLmnHXA8mz9av9G2jeyRdIPenj/wX6e1uDkG9NYI5J0PbA2Iv7qUOua1TufEZiZNTgHgZlZg3PTkJlZg/MZgZlZg6u5wawmTJgQ06dPL7oMM7Oa8vDDD78SEa09Lau5IJg+fTodHR1Fl2FmVlMkPXegZW4aMjNrcA4CM7MG5yAwM2twuQaBpAuzm3qs6hohstvyf5K0NHv8MhuF0czMBlBuncVKb993DfAO0puILJG0OCKWd60TEX9ctf6ngVPyqsfMzHqW5xnBacCqiFgdEfuAG0mH0T2Qy0kH5jIzswGUZxBM5vU371ibzXuDbCjeGWT3Zu1h+RWSOiR1bNiwod8LNTNrZIOls3gR8L2IKPe0MCKujYj2iGhvbe3x+xCHFC+/QPme24g9u/tSp5lZ3ckzCNZRdQcoYEo2ryeLyLlZqLJqJZW7b6XzK39P+e5bHQhmZpk8v1m8BJgtaQZpACwivd3e60iaB4wjvcFIbkpnnkcyczble2+ncs9tVB68l+SMc0jOOAe1DMtz12Zmg1puQRARnZKuBG4FSsB1EbFM0tVAR0QszlZdBNwYAzAMqiZOoekDHydeWkf5nm6BcOZ5qHlI3iWYmQ06NTcMdXt7e/TXWEPx0guU772NWPEEtB5L0/s+jI6e2C/bNjMbTCQ9HBHtPS0bLJ3FhdCxk2i67GOUPnwF7NpJ579+hXLHz6m1cDQz64uGDoIuyay5NH3qs2jaTCo/+h7l//w2sXtX0WWZmQ0IB0FGI0dR+tDvkFzwHmLlk3R+/ctU1vyq6LLMzHLnIKgiJZTOPI/SJz4NSUL5m1+l/Iv7iy7LzCxXDoIeJJOPo+mKP0Zz5lP58c2U7/qJ+w3MrG45CA5ALcMoXfZRdPJpVO69ncqPvk9UKkWXZWbW72ruVpUDSUmJ0sWXURkxksoDdxK7d1H69Q+iJv/YzKx++BPtECRRuuDXYMRIKrctprx7F6UPfAwNbSm6NDOzfuGmoV4qveVtlC69nHj2Gcrf+hdi546iSzIz6xcOgsOQnNROadHHiQ0v0/nvXyf27S26JDOzPnMQHKZkThulyz4K61+k/F/fIcIdyGZW2xwERyCZPZ/knRcTK5dRuePHRZdjZtYn7iw+QsnpZ8OGl6k8cCdqPYbkpB7HcjIzG/R8RnCEJJG8+zfQ9FmUf3iTh6Mws5rlIOgDlUqU3v9RGDOO8o3XE1s2FV2SmdlhcxD0kYaPoOnyT0C5k87vXkfs3VN0SWZmh8VB0A804RhK7/8t2PAy5Ztv8LhEZlZTHAT9JJk1l+Sd702vJHo419svm5n1KwdBP0pOPwvNmkPlth8SGzcUXY6ZWa84CPqRlFC6ZBGUSumXzcrloksyMzskB0E/06gxlN7zfuKFNVTu+2nR5ZiZHVKuQSDpQkkrJa2SdNUB1rlM0nJJyyTdkGc9AyVZcBI68c1U7v0plbXPFV2OmdlB5RYEkkrANcBFQBtwuaS2buvMBj4HnBkRC4A/yquegVa66Ndh9Jj0KiIPTmdmg1ieZwSnAasiYnVE7ANuBC7pts7vANdExGaAiFifYz0DSi3DKF16OWzaSOW2HxZdjpnZAeUZBJOBNVXTa7N51eYAcyQ9IOlBSRf2tCFJV0jqkNSxYUPtXI2TTJ9F8ta3UXn451R+ubzocszMelR0Z3ETMBs4F7gc+FdJY7uvFBHXRkR7RLS3trYOcIl9k5x3ERwzifLi/yD27C66HDOzN8gzCNYBU6ump2Tzqq0FFkfE/oj4FfBL0mCoG2pqouniy2DnDipLHii6HDOzN8gzCJYAsyXNkDQEWAQs7rbOD0jPBpA0gbSpaHWONRVCk6ai2fOp/Pwedxyb2aCTWxBERCdwJXArsAK4KSKWSbpa0sXZarcCGyUtB+4C/jQiNuZVU5GSsy+A3buodHj4CTMbXHK9MU1E3ALc0m3e56teB/CZ7FHXkqnTqcyYTeXnd5OceiZqbi66JDMzoPjO4oaSnPMO2LGdyqMPFV2KmdmrHAQDSNNmouNmUHngLqLcWXQ5ZmaAg2BASUr7CrZtIR7rKLocMzPAQTDgNGsumjSV8v13EhWPTmpmxXMQDDBJJOdcAJs3Ek88WnQ5ZmYOgiJozgI4ZiLl++8gKpWiyzGzBucgKIAkSme/A15ZT6x4vOhyzKzBOQgKovkLYcLRlO/9KRE+KzCz4jgICqIkoXTW22H9i8Syx4oux8wamIOgQFp4CkycQvnW//bIpGZWGAdBgZSUKL3nfenIpHf+uOhyzKxBOQgKlkyaSnLqWVSW/IzKuueLLsfMGpCDYBBIzr8QRo2i/MP/9JfMzGzAOQgGAQ1tSW92//ILVB68r+hyzKzBOAgGCc1biOa0Ubn7VmLLpqLLMbMG4iAYJCSlZwVA+cc3k96qwcwsfw6CQURjjyI5953EL5cTTz1ZdDlm1iAcBINMcvo5cMyk9Kxg756iyzGzBuAgGGRUyr5bsH0blZ/fU3Q5ZtYAHASDUDJlGppxPJUnHnFfgZnlLtcgkHShpJWSVkm6qoflH5O0QdLS7PHbedZTS5IFJ8OmV+CldUWXYmZ1LrcgkFQCrgEuAtqAyyW19bDqf0TEydnjG3nVU2s0fyEkCZUnlxZdipnVuTzPCE4DVkXE6ojYB9wIXJLj/uqKho9AM+dQWbbUzUNmlqs8g2AysKZqem02r7vflPS4pO9JmtrThiRdIalDUseGDRvyqHVQShacDFs3Ex6DyMxyVHRn8Q+B6RFxInA78K2eVoqIayOiPSLaW1tbB7TAImneCVAqEW4eMrMc5RkE64Dqv/CnZPNeFREbI2JvNvkN4M051lNz1DIMHT+PyvLHfBczM8tNnkGwBJgtaYakIcAiYHH1CpImVk1eDKzIsZ6alCw4GbZvJZ5/tuhSzKxONeW14YjolHQlcCtQAq6LiGWSrgY6ImIx8AeSLgY6gU3Ax/Kqp1ZpThs0NRHLlsK0mUWXY2Z1KLcgAIiIW4Bbus37fNXrzwGfy7OGWqehLWh2G5Xlj5NceClKiu7WMbN640+VGpAsOBl2bieee6boUsysDjkIaoDmzIfmIb56yMxy4SCoAWoegua2UVnxOFH2rSzNrH85CGpEsuBk2L2L+NXTRZdiZnXGQVAjdPw8GNpCZZmbh8ysfzkIaoSamtHcBcRTTxKdnUWXY2Z1xEFQQ5ITToE9u4lnVhZdipnVEQdBDdHM2dAyjMryx4ouxczqiIOghqjUhOa0Eaue8thDZtZvHAQ1Jpk5B3bthJdeKLoUM6sTDoIao5lzAKg888uCKzGzeuEgqDEaNRqOPpZY7SAws/7hIKhBycy5xPOrif37ii7FzOqAg6AGadYcKJeJ51YXXYqZ1QEHQQ3StJnpLSzdPGRm/cBBUIPUPAQdN8MdxmbWLxwENUoz58D6F4nt24ouxcxqnIOgRiWz5gK4ecjM+sxBUKuOnQTDR1BxEJhZHzkIapSUoJmzidW/JCKKLsfMaliuQSDpQkkrJa2SdNVB1vtNSSGpPc966k0ycw7s2A7rXyq6FDOrYbkFgaQScA1wEdAGXC6prYf1RgF/CDyUVy316tXhJtw8ZGZ9kOcZwWnAqohYHRH7gBuBS3pY7++ALwJ7cqylLmnMOJhwtDuMzaxP8gyCycCaqum12bxXSXoTMDUifnSwDUm6QlKHpI4NGzb0f6U1LJk5h3j2GaJzf9GlmFmNKqyzWFICfBn47KHWjYhrI6I9ItpbW1vzL66GaNZc6NxPrHm26FLMrEblGQTrgKlV01OyeV1GAScAd0t6FjgDWOwO48OjaTMhSXz7SjM7YnkGwRJgtqQZkoYAi4DFXQsjYmtETIiI6RExHXgQuDgiOnKsqe5oaAuaMp3K6qeLLsXMalRuQRARncCVwK3ACuCmiFgm6WpJF+e130akWXPgxXXEzh1Fl2JmNahXQSBpRNamj6Q5ki6W1Hyo90XELRExJyJmRcQXsnmfj4jFPax7rs8Gjkx6GWkQv/JZgZkdvt6eEdwLtEiaDNwGfAS4Pq+i7PBo0lRoGebRSM3siPQ2CBQRu4DfAL4aEe8HFuRXlh0OJQmaMZtYvdLDTZjZYet1EEh6C/AhoOua/1I+JdmRSObMh21biRfXFl2KmdWY3gbBHwGfA27OOnxnAnflV5YdLs09Ib2MdPljRZdiZjWmV0EQEfdExMUR8cWs0/iViPiDnGuzw6Bhw9H046mseMLNQ2Z2WHp71dANkkZLGgE8CSyX9Kf5lmaHK2k7ETa9AutfLLoUM6shvW0aaouIbcClwI+BGaRXDtkgonkngERl+eNFl2JmNaS3QdCcfW/gUmBxROwH3P4wyGjEKHTcTCorHARm1nu9DYKvA88CI4B7JU0DfNf0QUhtJ8KGl4lXXi66FDOrEb3tLP4/ETE5It4dqeeA83KuzY5AMm8hAJXlTxRciZnVit52Fo+R9OWuewJI+t+kZwc2yGj0GDRlmpuHzKzXets0dB2wHbgse2wDvplXUdY3mn8ivLSO2Lyx6FLMrAb0NghmRcRfZ7edXB0RfwvMzLMwO3JJ24kAvnrIzHqlt0GwW9JZXROSzgR251OS9ZXGHoUmTiHcPGRmvdDUy/U+BXxb0phsejPw0XxKsv6g+SdSufMWYuvm9Cb3ZmYH0Nurhh6LiJOAE4ETI+IU4PxcK7M+ebV5aIWvHjKzgzusO5RFxLbsG8YAn8mhHusnGt8KR08kHARmdgh9uVWl+q0Ky0UyfyHx/K+IHf7un5kdWF+CwENMDHJp81BQeerJoksxs0HsoJ3FkrbT8we+gGG5VGT9p/VYGN9KLH8c2t9adDVmNkgdNAgiYtRAFWL9TxLJ/BOpPHAXsWsHGj6y6JLMbBDqS9PQIUm6UNJKSaskXdXD8k9JekLSUkn3S2rLs55GlLSdCFEhVi4vuhQzG6RyCwJJJeAa4CKgDbi8hw/6GyJiYUScDPwj8OW86mlYx06GMeOoPOWrh8ysZ3meEZwGrMqGpNgH3AhcUr1C1aWokA5i5w7ofpY2Dy0knllJ7N1TdDlmNgjlGQSTgTVV02uzea8j6fclPUN6RtDjfZAlXdE18umGDRtyKbaeaf5CKJeJp1cUXYqZDUK59hH0RkRcExGzgD8H/uoA61wbEe0R0d7a2jqwBdYBTZkOI0b5MlIz61GeQbAOmFo1PSWbdyA3kt4K0/qZkoRk3gnE0yuIzv1Fl2Nmg0yeQbAEmC1phqQhwCJgcfUKkmZXTf4a8HSO9TQ0zTsB9u0lVvtHbGav19vRRw9bRHRKuhK4FSgB10XEMklXAx0RsRi4UtIFwH48ommuNON4GNpCZcXjJHN8la6ZvSa3IACIiFuAW7rN+3zV6z/Mc//2GpWa0NwFxMplRKWMklLRJZnZIFF4Z7ENnGTeQti9i3huddGlmNkg4iBoIDp+LjQ1e2hqM3sdB0EDUfMQNHselaeeIKJSdDlmNkg4CBpMMm8hbN9GrFtz6JXNrCE4CBqM5rRBUvKN7c3sVQ6CBqOWYWjmbCorniDCQzuZmYOgISXzFsLmjbD+xaJLMbNBwEHQgDRvASAqvnrIzHAQNCSNGIWmzfA9CswMcBA0LM1bCC+/SGx6pehSzKxgDoIGlcxfCBKVjp8VXYqZFcxB0KA0Zhxa+CYqS35G7Nh26DeYWd1yEDSw0jnvgHKZyv13FV2KmRXIQdDANL4VnfRmKh0/I7ZvLbocMyuIg6DBlc55B0SFyn13FF2KmRXEQdDgNG48Ovk0Ko88SGzdXHQ5ZlYAB4FROvvtEPiswKxBOQgMjT2K5E2nU3n0F8SWTUWXY2YDzEFgACRnvx0kyvf+tOhSzGyAOQgMAI0eS/LmtxBLl/jbxmYNJtcgkHShpJWSVkm6qofln5G0XNLjku6QNC3PeuzgkrPOh1JC+d7biy7FzAZQbkEgqQRcA1wEtAGXS2rrttqjQHtEnAh8D/jHvOqxQ9Oo0STtZxKPP0xs3FB0OWY2QPI8IzgNWBURqyNiH3AjcEn1ChFxV0TsyiYfBKbkWI/1QnLWedDUTPm2xb5xjVmDyDMIJgPVN8Zdm807kE8CP+5pgaQrJHVI6tiwwX+p5kkjRpGc+y7il8uJJx4puhwzGwCDorNY0oeBduBLPS2PiGsjoj0i2ltbWwe2uAaUnHEOmjKN8o9vJrZ7QDqzepdnEKwDplZNT8nmvY6kC4C/BC6OiL051mO9pCShdMki6NxP+UffcxORWZ3LMwiWALMlzZA0BFgELK5eQdIpwNdJQ2B9jrXYYdKEo0nOu4hYuYx48tGiyzGzHOUWBBHRCVwJ3AqsAG6KiGWSrpZ0cbbal4CRwH9KWipp8QE2ZwV4XROR71lgVrdUa6f97e3t0dHRUXQZDSNeeZnOr30ZHT+X0gc+jqSiSzKzIyDp4Yho72nZoOgstsFLE44hOf9CNxGZ1TEHgR1Scsbb3ERkVsccBHZI6VVEH4B9+ygvvomoVIouycz6kYPAekUTjiF553uJp1dQueNHRZdjZv2oqegCrHYkp54JG16m8rO70fhWkjedUXRJZtYPHATWa5JILrqU2LyR8o++D+MmkMw4vuiyzKyP3DRkh0VJidL7PgLjWynfdL1HKTWrAw4CO2xqGUbT5Z+EpETnDd8gdu0suiQz6wMHgR0RjRtPadHHYOsWyjd9iyh3Fl2SmR0hB4EdsWTqDEqXfIB47hnK//M9InxZqVktcmex9Umy8E3Epleo3H0r5QhKF1+GklLRZZnZYXAQWJ8l57wDJCp3/YTy3r2UfvPDqMm/Wma1wk1D1meSKJ3zDpILLyWeeoLyd/+N2OdbS5jVCgeB9ZvS6WdTuvRy4ldPU/73rxO7dx36TWZWOAeB9avkpHZK7/8o8eJaOr/1VWLH9qJLMrNDcBBYv0vmL6R0+Sdh00Y6v/l/iVdeLrokMzsIB4HlIpk1l9JHroA9u+m89itUHn+46JLM7AAcBJabZOoMmn73s2jiFMo330Dn4v8g9u8ruiwz68ZBYLnS6DGUPvopkrMvIB5dQuc3/tlNRWaDjIPAcqekROn8iyh96Ldhx/a0qegx33fabLDINQgkXShppaRVkq7qYfk5kh6R1CnpfXnWYsVLjp+XNhVNmkL5B9+l86bria2biy7LrOHlFgSSSsA1wEVAG3C5pLZuqz0PfAy4Ia86bHDR6DGUfutTJOdfRDz9FJ3X/CPl++/0oHVmBcpzHIDTgFURsRpA0o3AJcDyrhUi4tlsmUcrayBKSpTOvoBk4Zso/+QHVO74EZXHOii9+9dJZswuujyzhpNn09BkYE3V9Nps3mGTdIWkDkkdGzb4Rij1QmOPomnRJ9LvHHTup/ztr9H5/X8ntm0pujSzhlITI4NFxLXAtQDt7e1RcDnWz5I5bWjGbCoP3Enl/jvpXPEEySmnk5x1PhozrujyzOpenkGwDphaNT0lm2f2BmpupnTuu0hOPpXKfXdQeeQhKo88RHLyqSRnvx2NParoEs3qVp5BsASYLWkGaQAsAj6Y4/6sDmjsUZTe+36Scy6gcv+dVB59iMrSX6AT2ymddT4a31p0iWZ1RxH5tbRIejfwFaAEXBcRX5B0NdAREYslnQrcDIwD9gAvRcSCg22zvb09Ojp8DXqjiG1bqTxwF5VHfg6dnWjWHJI3vxXNaUMl3wDHrLckPRwR7T0uyzMI8uAgaEyxYxuVhx9KA2HbVhg1Ou1HeNPp7kcw6wUHgdWNqJSJp5+i8vDPiaefAoGOn0dywilo7gI0tKXoEs0GpYMFQU1cNWTWRUkJzV1AMncBsWUTlYcfpPJYB+WnV0BTE5o9n6TtpLTpaMjQoss1qwkOAqtZGnsUpbe/m+T8C4k1zxHLllJZ/hjlFU9AUzOa05ZemjprLho5quhyzQYtB4HVPClBx82A42aQvOsS4vlfpaGw4gnKyx9L15k4BR0/L31MOQ4l7mg26+I+AqtbERV46QUqTz9FrFpBrH0OIqBlGJo+Cx03k2TaTDh2koPB6p77CKwhSQlMnEJp4hQ45wJi9y5i9dNUVj1FPPcM8dSTVACGDEXHzUDHzURTp6OJk93pbA3FQWANQ8OGowUnkSw4CUi/oxDPryaeW03l+dXEnbd0rQmtR6NJU9PH5OPQMRNRU3NxxZvlyEFgDUujx6ATToETTqEExK6dxLrniRfWpI9VK4muG+gogQlHo2OORUdPSoPhmIkweiySCj0Os75yEJhlNHwEmj0fZs8HICJg2xZi3RrixbXE+heJtc8TTy597U1DW1DrMWlIjG9FE45GE46GcRP8zWerGQ4CswOQBGPGpd9cbjvx1fmxZzex/iXi5Rdh/YvExvXEMyuJpUuq3pzA2HFo3Hg0bjwcNR6Nm4COGg9jj3IfhA0qDgKzw6SWYa9erlot9u4hXlkPr6wnXllPbN4ImzdSWbYU9ux+/UZahmUhMzYNmrHj0OixaVPT6DEwajQq+b+nDQz/ppn1Ew1tQZOPg8nHvWFZ7N4FmzcSmzcSWzbBls3Eti3Els3Ec6th7543bnDEyDQYRo2GkaPTL8WNHIVGjs6eR8GIkf4GtfWZg8BsAGjYcBg2HE2a2uPy2LMbtm4htm+FbVvTkNi+DbZvJbZugXVriJ07gB6+99M8JA2EESNh+Ij09fARMHzEq88MH4GGjYDhw9PvUfh7E1bFQWA2CKhlWPoBfczEA64TlTLs2gnbtxE7tsOO7Wk47NqRPu/ckYbHSy8Qu3ZCufPAOxzaAl3hNGwYtGQB0dLS7fUwaGlJ+zSGZtNDhqTf0bC64SAwqxFKSjAyayY6xLoRAfv3pcGxa2caDLt2pk1Uu3fB7t3Enq7Xu9Kzjj170nnl8qEqgaFDs0dL2jTVFRRDh6bTXY+hQ9GQITCkBYYMSUOkeUi2PHtuHoISB0uRHARmdUjSax/GY486ZHBUi879aef2nt3Enj3p6717YO+edHrvnjQ09u2BvXshe47tW9N19u1L50el9zstNUFzcxoOzelDQ4ak85qz56YsRJqb0nlNzdDcnH7Rrzl7NHU9mlDza69f95wk/u5HNw4CM3sdNTXDyOZenXkcSESkTVP79mZhsTcNiH170zOVfftem963F/bvh/37iP370uX790MWKLFje9Xy9PnQZy0HO0BVBUNTGkJNzdBUSo+91NRtWROUSulVXN3mUcqWdc2vmtf9tV43v9t6SQlKSWFNbg4CM+t3evXDthmGj0zn9eP2o1KBzv3pY3/26NyfBkVn52vzs3Wia15n52vLOzvTs59y+XXzKHemZ0Ndr7Pn6Fqv3Nm3IDoYJVBK0pBIktcCI3tdets7SU44pd936yAws5qjJHmt6at6/gDtPyKg0hUM5dfCoSosomu6elnX60qZ6Eyf03mV9LlSed10VCrZOvrWZRYAAAZHSURBVNm6w4bncjwOAjOzwyQpa9o58EdoLfVCuKvezKzB5RoEki6UtFLSKklX9bB8qKT/yJY/JGl6nvWYmdkb5RYEkkrANcBFQBtwuaS2bqt9EtgcEccD/wR8Ma96zMysZ3meEZwGrIqI1RGxD7gRuKTbOpcA38pefw94u3yBr5nZgMozCCYDa6qm12bzelwnIjqBrcD47huSdIWkDkkdGzZsyKlcM7PGVBOdxRFxbUS0R0R7a2tr0eWYmdWVPINgHVA91OKUbF6P60hqAsYAG3OsyczMuskzCJYAsyXNkDQEWAQs7rbOYuCj2ev3AXdGRA/j7JqZWV6U5+eupHcDXwFKwHUR8QVJVwMdEbFYUgvw78ApwCZgUUSsPsQ2NwDPHWFJE4BXjvC9taxRjxsa99h93I2lN8c9LSJ6bFvPNQgGG0kdEdFedB0DrVGPGxr32H3cjaWvx10TncVmZpYfB4GZWYNrtCC4tugCCtKoxw2Ne+w+7sbSp+NuqD4CMzN7o0Y7IzAzs24cBGZmDa5hguBQQ2LXC0nXSVov6cmqeUdJul3S09nzuCJrzIOkqZLukrRc0jJJf5jNr+tjl9Qi6ReSHsuO+2+z+TOyod1XZUO9Dym61jxIKkl6VNL/ZNN1f9ySnpX0hKSlkjqyeX36PW+IIOjlkNj14nrgwm7zrgLuiIjZwB3ZdL3pBD4bEW3AGcDvZ//G9X7se4HzI+Ik4GTgQklnkA7p/k/ZEO+bSYd8r0d/CKyomm6U4z4vIk6u+u5An37PGyII6N2Q2HUhIu4l/ZZ2terhvr8FXDqgRQ2AiHgxIh7JXm8n/XCYTJ0fe6R2ZJPN2SOA80mHdoc6PG4ASVOAXwO+kU2LBjjuA+jT73mjBEFvhsSuZ8dExIvZ65eAY4osJm/Zne5OAR6iAY49ax5ZCqwHbgeeAbZkQ7tD/f6+fwX4M6CSTY+nMY47gNskPSzpimxen37PffP6BhMRIalurxmWNBL4PvBHEbGt+j5H9XrsEVEGTpY0FrgZmFdwSbmT9B5gfUQ8LOncousZYGdFxDpJRwO3S3qqeuGR/J43yhlBb4bErmcvS5oIkD2vL7ieXEhqJg2B70TEf2WzG+LYASJiC3AX8BZgbDa0O9Tn7/uZwMWSniVt6j0f+Gfq/7iJiHXZ83rS4D+NPv6eN0oQ9GZI7HpWPdz3R4H/LrCWXGTtw/8GrIiIL1ctqutjl9SanQkgaRjwDtL+kbtIh3aHOjzuiPhcREyJiOmk/5/vjIgPUefHLWmEpFFdr4F3Ak/Sx9/zhvlmcU9DYhdcUi4kfRc4l3RY2peBvwZ+ANwEHEc6hPdlEdG9Q7mmSToLuA94gtfajP+CtJ+gbo9d0omknYMl0j/sboqIqyXNJP1L+SjgUeDDEbG3uErzkzUN/UlEvKfejzs7vpuzySbghmx4//H04fe8YYLAzMx61ihNQ2ZmdgAOAjOzBucgMDNrcA4CM7MG5yAwM2twDgJrWJJ2ZM/TJX2wn7f9F92mf9af2zfrTw4CM5gOHFYQVH179UBeFwQR8dbDrMlswDgIzOAfgLOz8d3/OBvE7UuSlkh6XNLvQvrFJUn3SVoMLM/m/SAb/GtZ1wBgkv4BGJZt7zvZvK6zD2XbfjIbU/4DVdu+W9L3JD0l6TuqHijJLEcedM4sHbv9TyLiPQDZB/rWiDhV0lDgAUm3Zeu+CTghIn6VTX8iIjZlwzsskfT9iLhK0pURcXIP+/oN0vsGnET67e8lku7Nlp0CLABeAB4gHU/n/v4/XLPX8xmB2Ru9E/itbGjnh0iHN56dLftFVQgA/IGkx4AHSQc2nM3BnQV8NyLKEfEycA9watW210ZEBVhK2mRlljufEZi9kYBPR8Str5uZjmmzs9v0BcBbImKXpLuBlj7st3pMnDL+/2kDxGcEZrAdGFU1fSvwe9mw1kiak4302N0YYHMWAvNIb5HZZX/X+7u5D/hA1g/RCpwD/KJfjsLsCPkvDjN4HChnTTzXk45rPx14JOuw3UDPt/77CfApSSuAlaTNQ12uBR6X9Eg2PHKXm0nvF/AY6Z2m/iwiXsqCxKwQHn3UzKzBuWnIzKzBOQjMzBqcg8DMrME5CMzMGpyDwMyswTkIzMwanIPAzKzB/X+DU0AhK3etaAAAAABJRU5ErkJggg==
+<img src="data:image/png;base64,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
 " />
 </div>
 
@@ -1784,7 +1766,7 @@ Loss after interation 49 is 0.0198
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Getting-predictions-from-our-model">Getting predictions from our model<a class="anchor-link" href="#Getting-predictions-from-our-model"> </a></h2>
+<h2 id="Generating-predictions-from-the-model">Generating predictions from the model<a class="anchor-link" href="#Generating-predictions-from-the-model"> </a></h2>
 </div>
 </div>
 </div>
