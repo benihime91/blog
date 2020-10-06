@@ -8,15 +8,15 @@
 <meta name="generator" content="Jekyll v4.1.1" />
 <meta property="og:title" content="Understanding L2 regularization, Weight decay and AdamW" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization." />
-<meta property="og:description" content="A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization." />
-<link rel="canonical" href="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html" />
-<meta property="og:url" content="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html" />
+<meta name="description" content="A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x ." />
+<meta property="og:description" content="A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x ." />
+<link rel="canonical" href="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html" />
+<meta property="og:url" content="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html" />
 <meta property="og:site_name" content="Another Deep-Learning Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-10-05T00:00:00-05:00" />
 <script type="application/ld+json">
-{"description":"A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization.","url":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html","@type":"BlogPosting","headline":"Understanding L2 regularization, Weight decay and AdamW","dateModified":"2020-10-05T00:00:00-05:00","datePublished":"2020-10-05T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html"},"@context":"https://schema.org"}</script>
+{"description":"A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x .","url":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html","@type":"BlogPosting","headline":"Understanding L2 regularization, Weight decay and AdamW","dateModified":"2020-10-05T00:00:00-05:00","datePublished":"2020-10-05T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://benihime91.github.io/blog/feed.xml" title="Another Deep-Learning Blog" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
 <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
@@ -87,7 +87,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Understanding L2 regularization, Weight decay and AdamW</h1><p class="page-description">A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper **Decoupled Weight Decay Regularization**.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-10-05T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Understanding L2 regularization, Weight decay and AdamW</h1><p class="page-description">A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x .</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-10-05T00:00:00-05:00" itemprop="datePublished">
         Oct 5, 2020
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -111,19 +111,19 @@ window.onload = wrap_img;
         <div class="pb-5 d-flex flex-wrap flex-justify-end">
           <div class="px-2">
 
-    <a href="https://github.com/benihime91/blog/tree/master/_notebooks/post_002.ipynb" role="button" target="_blank">
+    <a href="https://github.com/benihime91/blog/tree/master/_notebooks/adamW.ipynb" role="button" target="_blank">
 <img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
     </a>
 </div>
 
           <div class="px-2">
-    <a href="https://mybinder.org/v2/gh/benihime91/blog/master?filepath=_notebooks%2Fpost_002.ipynb" target="_blank">
+    <a href="https://mybinder.org/v2/gh/benihime91/blog/master?filepath=_notebooks%2FadamW.ipynb" target="_blank">
         <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
     </a>
 </div>
 
           <div class="px-2">
-    <a href="https://colab.research.google.com/github/benihime91/blog/blob/master/_notebooks/post_002.ipynb" target="_blank">
+    <a href="https://colab.research.google.com/github/benihime91/blog/blob/master/_notebooks/adamW.ipynb" target="_blank">
         <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
     </a>
 </div>
@@ -135,7 +135,7 @@ window.onload = wrap_img;
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
-# file to edit: _notebooks/post_002.ipynb
+# file to edit: _notebooks/adamW.ipynb
 -->
 
 <div class="container" id="notebook-container">
@@ -152,7 +152,7 @@ window.onload = wrap_img;
         theme="github-light"
         crossorigin="anonymous"
         async>
-</script><a class="u-url" href="/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html" hidden></a>
+</script><a class="u-url" href="/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html" hidden></a>
 </article>
       </div>
     </main><footer class="site-footer h-card">
