@@ -4,17 +4,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Tags | Another Deep-Learning Blog</title>
+<title>Understanding L2 regularization, Weight decay and AdamW | Another Deep-Learning Blog</title>
 <meta name="generator" content="Jekyll v4.1.1" />
-<meta property="og:title" content="Tags" />
+<meta property="og:title" content="Understanding L2 regularization, Weight decay and AdamW" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Tips, Tricks and Tutorials for Deep-Learning enthusiasts." />
-<meta property="og:description" content="Tips, Tricks and Tutorials for Deep-Learning enthusiasts." />
-<link rel="canonical" href="https://benihime91.github.io/blog/categories/" />
-<meta property="og:url" content="https://benihime91.github.io/blog/categories/" />
+<meta name="description" content="A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization." />
+<meta property="og:description" content="A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization." />
+<link rel="canonical" href="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html" />
+<meta property="og:url" content="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html" />
 <meta property="og:site_name" content="Another Deep-Learning Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-10-05T00:00:00-05:00" />
 <script type="application/ld+json">
-{"description":"Tips, Tricks and Tutorials for Deep-Learning enthusiasts.","url":"https://benihime91.github.io/blog/categories/","@type":"WebPage","headline":"Tags","@context":"https://schema.org"}</script>
+{"description":"A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization.","url":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html","@type":"BlogPosting","headline":"Understanding L2 regularization, Weight decay and AdamW","dateModified":"2020-10-05T00:00:00-05:00","datePublished":"2020-10-05T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://benihime91.github.io/blog/feed.xml" title="Another Deep-Learning Blog" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
 <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
@@ -82,63 +84,76 @@ window.onload = wrap_img;
 </header>
 <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <div class="home">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Understanding L2 regularization, Weight decay and AdamW</h1><p class="page-description">A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper **Decoupled Weight Decay Regularization**.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-10-05T00:00:00-05:00" itemprop="datePublished">
+        Oct 5, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
 
-<h2>Contents</h2>
-
-  
-  
-  
-
-  <ul>
-  
-    <li><a href="#jupyter">jupyter</a></li>
-  
-    <li><a href="#machinelearning deeplearning python3.x numpy">machinelearning deeplearning python3.x numpy</a></li>
-  
-    <li><a href="#machinelearning deeplearning python3.x tensorflow2.x">machinelearning deeplearning python3.x tensorflow2.x</a></li>
-  
-    <li><a href="#markdown">markdown</a></li>
-  
-  </ul>
-
-  
-      <h3 id ="jupyter"><i class="fas fa-tags category-tags-icon"></i></i> jupyter</h3>
-      <a name="jupyter"></a>
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
       
+        <a class="category-tags-link" href="/blog/categories/#machinelearning deeplearning python3.x tensorflow2.x">machinelearning deeplearning python3.x tensorflow2.x</a>
         
       
-  
-      <h3 id ="machinelearning deeplearning python3.x numpy"><i class="fas fa-tags category-tags-icon"></i></i> machinelearning deeplearning python3.x numpy</h3>
-      <a name="machinelearning deeplearning python3.x numpy"></a>
-      
-        <article class="archive-item">
-          <p class="post-meta post-meta-title"><a class="page-meta" href="/blog/machinelearning%20deeplearning%20python3.x%20numpy/2020/09/22/nn-from-scratch.html">Creating a Neural-Network from scratch</a>  • Sep 22, 2020</p>
-        </article>
-        
-      
-  
-      <h3 id ="machinelearning deeplearning python3.x tensorflow2.x"><i class="fas fa-tags category-tags-icon"></i></i> machinelearning deeplearning python3.x tensorflow2.x</h3>
-      <a name="machinelearning deeplearning python3.x tensorflow2.x"></a>
-      
-        <article class="archive-item">
-          <p class="post-meta post-meta-title"><a class="page-meta" href="/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html">Understanding L2 regularization, Weight decay and AdamW</a>  • Oct 5, 2020</p>
-        </article>
-        
-      
-  
-      <h3 id ="markdown"><i class="fas fa-tags category-tags-icon"></i></i> markdown</h3>
-      <a name="markdown"></a>
-      
-        
-      
-  
+      </p>
+    
 
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
 
-
-
+    <a href="https://github.com/benihime91/blog/tree/master/_notebooks/post_002.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
 </div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/benihime91/blog/master?filepath=_notebooks%2Fpost_002.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/benihime91/blog/blob/master/_notebooks/post_002.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/post_002.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="benihime91/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/post_002.html" hidden></a>
+</article>
       </div>
     </main><footer class="site-footer h-card">
   <data class="u-url" href="/blog/"></data>
