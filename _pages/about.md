@@ -14,24 +14,15 @@ permalink: /about/
     <img src="https://www.dropbox.com/s/602juvgb0dfdbj3/git.jpeg?raw=1" alt="dp" width="230" height="250"
         class="rounded-corners">
 </div>
+<br />
+<br />
 
 <div align="center">
-    <b>Ayushman Buragohain</b>
+    <h1><b> Hi there 👋 I'm Ayushman 👨‍💻 !</b></h1>
 </div>
 
-<p style="text-align:center;">
-    <a href="https://github.com/benihime91"><img src="https://www.dropbox.com/s/cb23x1lkfo2qoua/github.svg?raw=1"
-            height="40" width="40" class="rounded-corners"></a>
-    <a href="https://www.linkedin.com/in/ayushman-buragohain-2145a7184"><img
-            src="https://www.dropbox.com/s/ynaay0175exmmyq/linkedin.svg?raw=1" height="40" width="40"
-            class="rounded-corners"></a>
-</p>
-
-<div align="center">
-    <h1><b>HELLO WORLD !</b></h1>
-</div>
-
----
+<br />
+<br />
 
 Hi! I am Ayushman, a 3rd Year Undergrad student currently pursuing a Bachelor of Technology (B.Tech) in Computer Science Engineering (CSE) at the Central Institue of Technology , Kokrajhar (CIT Kokrajhar). 
 
@@ -44,3 +35,18 @@ I enjoy coding in Python. Python to me is one of the most wonderful computer lan
 There are quite a few things I am passionate about in life, and Deep Learning is just one facet of my life. I enjoy reading novels in my free-time especially the ones with thriller and mystery elements in it.
 
 Feel free to contact me at aburagohain160@gmail.com
+
+---
+### **Connect with me**:
+[<img align="left" width="40px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/twitter.svg" />][twitter]
+[<img align="left" width="40px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />][linkedin]
+[<img align="left" width="40px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/instagram.svg" />][instagram]
+
+<br />
+<br />
+
+
+[linkedin]: https://www.linkedin.com/in/ayushman-buragohain-2145a7184/
+[instagram]: https://www.instagram.com/_ayushman160_/
+[twitter]: https://twitter.com/Ayushma75139217
+[token]: 65edbf05a1ac2b4787d1fa953cd9108b3ea3addf
