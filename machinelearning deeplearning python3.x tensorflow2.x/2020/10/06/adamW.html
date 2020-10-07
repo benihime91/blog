@@ -197,12 +197,39 @@ $$ finalLoss = loss+ \frac{\lambda}{2m}\sum\limits_{w}w^{2}$$
 <div class="highlight"><pre><span></span><span class="n">final_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
 <span class="n">final_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">l2_reg_term</span>
 </pre></div>
-<blockquote><p>Note :all code equations are written in python, numpy notation.
-Cosequently the weight update step for <strong>vanilla SGD</strong> is going to look something like this:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote><p>Note :all code equations are written in python, numpy notation.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Cosequently the weight update step for <strong>vanilla SGD</strong> is going to look something like this:</p>
 <div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">l2_reg_term</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">w</span>
 </pre></div>
-<p>Note :assume that grad_w is the gradients of the loss of the model wrt weights of the model&gt; Note :assume that grad(a,b) calculates the gradients of a wrt to b</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote><p>Note :assume that grad_w is the gradients of the loss of the model wrt weights of the model</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote><p>Note :assume that grad(a,b) calculates the gradients of a wrt to b</p>
 </blockquote>
 
 </div>
