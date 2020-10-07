@@ -16,8 +16,22 @@ permalink: /about/
 </div>
 
 <div align="center">
+    <b>Ayushman Buragohain</b>
+</div>
+
+<p style="text-align:center;">
+    <a href="https://github.com/benihime91"><img src="https://www.dropbox.com/s/cb23x1lkfo2qoua/github.svg?raw=1"
+            height="40" width="40" class="rounded-corners"></a>
+    <a href="https://www.linkedin.com/in/ayushman-buragohain-2145a7184"><img
+            src="https://www.dropbox.com/s/ynaay0175exmmyq/linkedin.svg?raw=1" height="40" width="40"
+            class="rounded-corners"></a>
+</p>
+
+<div align="center">
     <h1><b>HELLO WORLD !</b></h1>
 </div>
+
+---
 
 Hi! I am Ayushman, a 3rd Year Undergrad student currently pursuing a Bachelor of Technology (B.Tech) in Computer Science Engineering (CSE) at the Central Institue of Technology , Kokrajhar (CIT Kokrajhar). 
 
