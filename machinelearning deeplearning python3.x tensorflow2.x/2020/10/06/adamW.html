@@ -10,13 +10,13 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x ." />
 <meta property="og:description" content="A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x ." />
-<link rel="canonical" href="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html" />
-<meta property="og:url" content="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html" />
+<link rel="canonical" href="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/06/adamW.html" />
+<meta property="og:url" content="https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/06/adamW.html" />
 <meta property="og:site_name" content="Another Deep-Learning Blog" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-10-05T00:00:00-05:00" />
+<meta property="article:published_time" content="2020-10-06T00:00:00-05:00" />
 <script type="application/ld+json">
-{"description":"A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x .","url":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html","@type":"BlogPosting","headline":"Understanding L2 regularization, Weight decay and AdamW","dateModified":"2020-10-05T00:00:00-05:00","datePublished":"2020-10-05T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html"},"@context":"https://schema.org"}</script>
+{"description":"A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x .","url":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/06/adamW.html","@type":"BlogPosting","headline":"Understanding L2 regularization, Weight decay and AdamW","dateModified":"2020-10-06T00:00:00-05:00","datePublished":"2020-10-06T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/06/adamW.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://benihime91.github.io/blog/feed.xml" title="Another Deep-Learning Blog" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
 <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
@@ -87,8 +87,8 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Understanding L2 regularization, Weight decay and AdamW</h1><p class="page-description">A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x .</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-10-05T00:00:00-05:00" itemprop="datePublished">
-        Oct 5, 2020
+    <h1 class="post-title p-name" itemprop="name headline">Understanding L2 regularization, Weight decay and AdamW</h1><p class="page-description">A post explaining L2 regularization, Weight decay and AdamW optimizer as described in the paper Decoupled Weight Decay Regularization we will also go over how to implement these using tensorflow2.x .</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-10-06T00:00:00-05:00" itemprop="datePublished">
+        Oct 6, 2020
       </time>
        • <span class="read-time" title="Estimated read time">
     
@@ -140,6 +140,80 @@ window.onload = wrap_img;
 
 <div class="container" id="notebook-container">
         
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-is-regularization-?">What is regularization ?<a class="anchor-link" href="#What-is-regularization-?"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In simple words regularization helps in reduces over-fitting on the data. There are many regularization strategies.</p>
+<p>The major regularization techniques used in practice are:</p>
+<ul>
+<li>L2 Regularization</li>
+<li>L1 Regularization</li>
+<li>Data Augmentation</li>
+<li>Dropout</li>
+<li>Early Stopping</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="L2-regularization-:">L2 regularization :<a class="anchor-link" href="#L2-regularization-:"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In L2 regularization, an extra term often referred to as regularization term is added to the loss function of the network.</p>
+<p>Consider the the following cross entropy loss function (without regularization):</p>
+<p>
+$$loss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right) + (1-y^{(i)})\log\left(1-yhat^{(i)}\right)) $$
+</p>
+<p>To apply L2 regularization to the loss function above we add the term given below to the loss function :</p>
+<p>
+$$\frac{\lambda}{2m}\sum\limits_{w}w^{2} $$
+</p>
+<p>where $\lambda$ is a hyperparameter of the model known as the regularization parameter. $\lambda$ is a hyper-parameter which means it is not learned during the training but is tuned by the user manually</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After applying the <code>regularization term</code> to our original loss function :
+
+$$finalLoss= -\frac{1}{m} \sum\limits_{i = 1}^{m} (y^{(i)}\log\left(yhat^{(i)}\right) + (1-y^{(i)})\log\left(1-yhat^{(i)}\right)) + \frac{\lambda}{2m}\sum\limits_{w}w^{2}$$
+</p>
+<p>or , 
+
+$$ finalLoss = loss+ \frac{\lambda}{2m}\sum\limits_{w}w^{2}$$
+</p>
+<p>or in simple code :</p>
+<div class="highlight"><pre><span></span><span class="n">final_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">final_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">l2_reg_term</span>
+</pre></div>
+<blockquote><p>Note :all code equations are written in python, numpy notation.
+Cosequently the weight update step for <strong>vanilla SGD</strong> is going to look something like this:</p>
+<div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">l2_reg_term</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">w</span>
+</pre></div>
+<p>Note :assume that grad_w is the gradients of the loss of the model wrt weights of the model&gt; Note :assume that grad(a,b) calculates the gradients of a wrt to b</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Weight-Decay-:">Weight Decay :<a class="anchor-link" href="#Weight-Decay-:"> </a></h2>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -152,7 +226,7 @@ window.onload = wrap_img;
         theme="github-light"
         crossorigin="anonymous"
         async>
-</script><a class="u-url" href="/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/05/adamW.html" hidden></a>
+</script><a class="u-url" href="/blog/machinelearning%20deeplearning%20python3.x%20tensorflow2.x/2020/10/06/adamW.html" hidden></a>
 </article>
       </div>
     </main><footer class="site-footer h-card">
