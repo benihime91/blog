@@ -93,7 +93,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      3 min read
+      4 min read
     
 </span></p>
 
@@ -317,6 +317,49 @@ $$ finalLoss = loss+ \frac{\lambda}{2m}\sum\limits_{w}w^{2}$$
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>Weight decay != L2 regularization</code>.</p>
 <p>To prove this point let's first take a look at <strong>SGD with momentum</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In <strong>SGD with momentum</strong> the gradients are not directly subtracted from the weights in the update step.</p>
+<ul>
+<li>First, we calculate a <code>moving average</code> of the gradients .</li>
+<li>and then , we subtract the <code>moving average</code> from the weights.</li>
+</ul>
+<p>For L2 regularization the steps will be :</p>
+<div class="highlight"><pre><span></span><span class="c1"># compute gradients </span>
+<span class="n">gradients</span> <span class="o">=</span> <span class="n">grad_w</span> <span class="o">+</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">w</span>
+<span class="c1"># compute the moving average</span>
+<span class="n">Vdw</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">Vdw</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
+<span class="c1"># update the weights of the model</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">Vdw</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, weight decay’s update will look like</p>
+<div class="highlight"><pre><span></span><span class="c1"># compute gradients </span>
+<span class="n">gradients</span> <span class="o">=</span> <span class="n">grad_w</span>
+<span class="c1"># compute the moving average</span>
+<span class="n">Vdw</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">Vdw</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
+<span class="c1"># update the weights of the model</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">Vdw</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">lamdba</span> <span class="o">*</span> <span class="n">w</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>Vdw is a moving average of the parameter w . It starts at 0 and then at each step it is updated as:   
+</div><code>Vdw = beta * Vdw + (1-beta) * (gradients)</code>, where <code>beta</code> is a another hyperparameter .</p>
 
 </div>
 </div>
