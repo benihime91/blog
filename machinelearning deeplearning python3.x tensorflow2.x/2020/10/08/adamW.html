@@ -93,7 +93,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      14 min read
+      15 min read
     
 </span></p>
 
@@ -1205,16 +1205,41 @@ Epoch 10/10
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="So-which-should-we-use-?-Weight-Decay-or-L2-regularization-?">So which should we use ? Weight Decay or L2 regularization ?<a class="anchor-link" href="#So-which-should-we-use-?-Weight-Decay-or-L2-regularization-?"> </a></h2>
+<h2 id="Weight-Decay-or-L2-regularization-?">Weight Decay or L2 regularization ?<a class="anchor-link" href="#Weight-Decay-or-L2-regularization-?"> </a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>After all this which should we use : <strong>L2 regularization</strong> or <strong>weight decay</strong> ?</p>
 <p>According to the words of <a href="https://www.fast.ai/2018/07/02/adam-weight-decay/">Jeremy Howard</a> from <a href="https://www.fast.ai/">Fast.ai</a> :</p>
 <blockquote><p>So, weight decay is always better than L2 regularization with Adam then?<br />
 We haven’t found a situation where it’s significantly worse, but for either a transfer-learning problem (e.g. fine-tuning Resnet50 on Stanford cars) or RNNs, it didn’t give better results.</p>
 </blockquote>
+<p>Also in the above models that we trained with both <code>sgd</code> and <code>adam</code> optimzer using weight decay has lead to lower loss for both <code>sgd</code> and <code>adam</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary-:">Summary :<a class="anchor-link" href="#Summary-:"> </a></h2><ul>
+<li>we explored the concepts behind <strong>weight decay</strong> and <strong>L2 regularization</strong> .</li>
+<li>explored <strong>Adam</strong> &amp; <strong>AdamW</strong> .</li>
+<li>learned how to implement <strong>weight decay</strong>, <strong>L2 regularization</strong> &amp; <strong>AdamW</strong> in <strong>TensorFlow</strong></li>
+</ul>
+<p>Thanks for reading !</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="References-:">References :<a class="anchor-link" href="#References-:"> </a></h2><ul>
+<li><a href="https://www.fast.ai/2018/07/02/adam-weight-decay/">AdamW and Super-convergence is now the fastest way to train neural nets</a></li>
+<li><a href="https://arxiv.org/abs/1711.05101">Decoupled Weight Decay Regularization</a></li>
+<li><a href="https://ruder.io/optimizing-gradient-descent/">An overview of gradient descent optimization algorithms</a></li>
+</ul>
 
 </div>
 </div>
