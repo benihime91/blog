@@ -379,8 +379,7 @@ $$ finalLoss = loss+ \frac{\lambda}{2m}\sum\limits_{w}w^{2}$$
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This difference is much more visible when using the <strong>Adam</strong> Optimizer. Adam computes adaptive learning rates for each parameter. Adam stores <code>moving average of past squared gradients</code> and <code>moving average of past gradients</code>. These <code>moving averages</code> of past and past squared gradients $Sdw$ and $Vdw$ are computed as follows:</p>
 <div class="highlight"><pre><span></span><span class="n">Vdw</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">Vdw</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="n">Sdw</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">Sdw</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
+<span class="n">Sdw</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">Sdw</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
 </pre></div>
 <p><div class="flash">
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
@@ -432,7 +431,7 @@ $$ finalLoss = loss+ \frac{\lambda}{2m}\sum\limits_{w}w^{2}$$
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The difference between <strong>L2 regularization</strong> and <strong>weight decay</strong> is clearly visible now.</p>
-<p>In the case of <strong>L2 regularization</strong> we add this <code>lamdba * w</code> to the gradients then compute a moving average of the gradients and their squares before using both of them for the update.</p>
+<p>In the case of <strong>L2 regularization</strong> we add this $lamdba * w$ to the gradients then compute a moving average of the gradients and their squares before using both of them for the update.</p>
 <p>Whereas the <strong>weight decay</strong> method simply consists in doing the update, then subtract to each weight.</p>
 <p>After much experimentation Ilya Loshchilov and Frank Hutter suggest in their paper : <a href="https://arxiv.org/pdf/1711.05101.pdf">DECOUPLED WEIGHT DECAY REGULARIZATION</a> we should use weight decay with <strong>Adam</strong>, and not the L2 regularization that classic deep learning libraries implement. This is what gave rise to <strong>AdamW</strong>.</p>
 <p>In simple terms, <strong>AdamW</strong> is simply <strong>Adam</strong> optimzer used with <strong>weight decay</strong> instead of classic <strong>L2 regularization</strong>.</p>
@@ -782,6 +781,16 @@ NUM EXAMPLES IN VALIDATION DATASET:  734
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>For loss_fn we are ging to use <code>tf.keras.losses.SparseCategoricalCrossentropy</code> which is <code>CrossEntropyLoss</code> also since we are not using a activation in the output layer we need to set <code>tf.keras.losses.SparseCategoricalCrossentropy(from_logits = True)</code> and let&#8217;s compute the accuracy of our model so we will use <code>tf.keras.metrics.SparseCategoricalAccuracy(name="accuracy")</code>.
+</div></p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="L2-regularization-:">L2 regularization :<a class="anchor-link" href="#L2-regularization-:"> </a></h3><p>To use L2 regularization, in tensorflow we need to use the class : <code>tf.keras.regularizers.L2</code> .</p>
