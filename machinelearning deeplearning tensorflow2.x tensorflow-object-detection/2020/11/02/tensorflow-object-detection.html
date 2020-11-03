@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>TensorFlow Object Detection API Tutorial | Another Deep-Learning Blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="TensorFlow Object Detection API Tutorial" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="TensorFlow recently announced TF Object Detection API models to be TensorFlow 2 compatible . In this tutorial we will go over on how to train a object detection model on custom dataset using TensorFlow Object Detection API 2." />
+<meta property="og:description" content="TensorFlow recently announced TF Object Detection API models to be TensorFlow 2 compatible . In this tutorial we will go over on how to train a object detection model on custom dataset using TensorFlow Object Detection API 2." />
+<link rel="canonical" href="https://benihime91.github.io/blog/machinelearning%20deeplearning%20tensorflow2.x%20tensorflow-object-detection/2020/11/02/tensorflow-object-detection.html" />
+<meta property="og:url" content="https://benihime91.github.io/blog/machinelearning%20deeplearning%20tensorflow2.x%20tensorflow-object-detection/2020/11/02/tensorflow-object-detection.html" />
+<meta property="og:site_name" content="Another Deep-Learning Blog" />
+<meta property="og:image" content="https://benihime91.github.io/blog/images/object-detection.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-11-02T00:00:00-06:00" />
+<script type="application/ld+json">
+{"description":"TensorFlow recently announced TF Object Detection API models to be TensorFlow 2 compatible . In this tutorial we will go over on how to train a object detection model on custom dataset using TensorFlow Object Detection API 2.","url":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20tensorflow2.x%20tensorflow-object-detection/2020/11/02/tensorflow-object-detection.html","@type":"BlogPosting","headline":"TensorFlow Object Detection API Tutorial","dateModified":"2020-11-02T00:00:00-06:00","datePublished":"2020-11-02T00:00:00-06:00","image":"https://benihime91.github.io/blog/images/object-detection.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://benihime91.github.io/blog/machinelearning%20deeplearning%20tensorflow2.x%20tensorflow-object-detection/2020/11/02/tensorflow-object-detection.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://benihime91.github.io/blog/feed.xml" title="Another Deep-Learning Blog" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Another Deep-Learning Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">TensorFlow Object Detection API Tutorial</h1><p class="page-description">TensorFlow recently announced <a href='https://blog.tensorflow.org/2020/07/tensorflow-2-meets-object-detection-api.html'>TF Object Detection API models to be TensorFlow 2 compatible</a> . In this tutorial we will go over on how to train a object detection model on custom dataset using TensorFlow Object Detection API 2.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-11-02T00:00:00-06:00" itemprop="datePublished">
+        Nov 2, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      19 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#machinelearning deeplearning tensorflow2.x tensorflow-object-detection">machinelearning deeplearning tensorflow2.x tensorflow-object-detection</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/benihime91/blog/tree/master/_notebooks/2020-11-02-tensorflow-object-detection.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/benihime91/blog/master?filepath=_notebooks%2F2020-11-02-tensorflow-object-detection.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/benihime91/blog/blob/master/_notebooks/2020-11-02-tensorflow-object-detection.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-11-02-tensorflow-object-detection.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><div class="flash flash-warn">
+    <svg class="octicon octicon-zap octicon octicon-zap octicon octicon-zap" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.561 1.5a.016.016 0 00-.01.004L3.286 8.571A.25.25 0 003.462 9H6.75a.75.75 0 01.694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0012.538 7H9.25a.75.75 0 01-.683-1.06l2.008-4.418.003-.006a.02.02 0 00-.004-.009.02.02 0 00-.006-.006L10.56 1.5zM9.504.43a1.516 1.516 0 012.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 01-.871.354h-.302a1.25 1.25 0 01-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429z"></path></svg>
+    <strong>Important: </strong>This guide is based on <a href="https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html">official tutorial</a> and could intersect with this <a href="(https://blog.roboflow.com/train-a-tensorflow2-object-detection-model/">Tutorial from Roboflow-Team</a>. 
+</div></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction"> </a></h1><p>In this notebook, we implement <a href="https://blog.tensorflow.org/2020/07/tensorflow-2-meets-object-detection-api.html">The TensorFlow 2 Object Detection Library</a> for training on your own dataset.</p>
+<p>We will take the following steps to implement a model from <strong><a href="https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md">TensorFlow 2 Detection Model Zoo</a></strong> on our custom data:</p>
+<ul>
+<li>Install TensorFlow2 Object Detection Dependencies</li>
+<li>Download Custom TensorFlow2 Object Detection Dataset</li>
+<li>Write Custom TensorFlow2 Object Detection Training Configuation</li>
+<li>Train Custom TensorFlow2 Object Detection Model</li>
+<li>Export Custom TensorFlow2 Object Detection Weights</li>
+<li>Use Trained TensorFlow2 Object Detection For Inference on Test Images</li>
+</ul>
+<p>When you are done you will have a custom detector that you can use. It will make inference like this:</p>
+<p><img src="https://www.dropbox.com/s/slkbti9incj3k09/object-detection.jpg?raw=1" alt="" /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Install-TensorFlow2-Object-Detection-Dependencies">Install TensorFlow2 Object Detection Dependencies<a class="anchor-link" href="#Install-TensorFlow2-Object-Detection-Dependencies"> </a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To install <strong>TensorFlow2 Object Detection</strong> on Google-Colab run the following steps.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#installing tensforflow-object-detection-API</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c1"># Clone the tensorflow models repository if it doesn&#39;t already exist</span>
+<span class="k">if</span> <span class="s2">&quot;models&quot;</span> <span class="ow">in</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+  <span class="k">while</span> <span class="s2">&quot;models&quot;</span> <span class="ow">in</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="ow">not</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;models&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+  <span class="o">!</span>git clone --depth <span class="m">1</span> https://github.com/tensorflow/models
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Install the Object Detection API</span>
+<span class="o">%%</span><span class="k">bash</span>
+cd models/research
+# Compile protos.
+protoc object_detection/protos/*.proto --python_out=.
+# Install TensorFlow Object Detection API.
+cp object_detection/packages/tf2/setup.py .
+python -m pip install .
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Run the TF2 model builder tests to make sure our environment is up and running. If successful  If successful, you should see the following outputs at the end of the cell execution printouts.</p>
+
+<pre><code>[ RUN      ] ModelBuilderTF2Test.test_unknown_ssd_feature_extractor
+[       OK ] ModelBuilderTF2Test.test_unknown_ssd_feature_extractor
+----------------------------------------------------------------------
+Ran 20 tests in 52.705s
+
+OK (skipped=1)</code></pre>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#run model builder test</span>
+<span class="o">!</span>python /content/models/research/object_detection/builders/model_builder_tf2_test.py
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To install on a custom machine check : <a href="https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html">Installation</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Download-the-data:">Download the data:<a class="anchor-link" href="#Download-the-data:"> </a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For this task we are going to be using the Oxford Pets dataset. This dataset contains 37 category pet dataset with roughly 200 images for each class. The annotations contain tight bounding box (ROI) around the head of the animal.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz
+<span class="o">!</span>wget http://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz
+<span class="o">!</span>tar -xf annotations.tar.gz
+<span class="o">!</span>tar -xf images.tar.gz
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#We will store all the required files in the workspace folder</span>
+<span class="o">!</span>mkdir /content/workspace/
+<span class="o">!</span>mkdir /content/workspace/images/ # store images
+<span class="o">!</span>mkdir /content/workspace/annotations/ # store xml annotation files
+<span class="o">!</span>mkdir /content/workspace/images/train # train images
+<span class="o">!</span>mkdir /content/workspace/images/test # <span class="nb">test</span> images
+<span class="o">!</span>mkdir /content/workspace/annotations/train # train annotations
+<span class="o">!</span>mkdir /content/workspace/annotations/test # <span class="nb">test</span> annotations
+<span class="o">!</span>mkdir /content/workspace/data/ # directory to store the tf_records <span class="p">&amp;</span> the label_map
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="n">IMAGE_DIR</span> <span class="o">=</span> <span class="s2">&quot;/content/images&quot;</span>
+<span class="n">ANNOT_DIR</span> <span class="o">=</span> <span class="s2">&quot;/content/annotations/xmls&quot;</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_colwidth&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">&quot;/content/&quot;</span><span class="p">)</span>
+
+<span class="o">%</span><span class="k">load_ext</span> tensorboard
+<span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="o">%</span><span class="k">autoreload</span> 2
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow.compat.v1</span> <span class="k">as</span> <span class="nn">tf1</span>
+<span class="kn">import</span> <span class="nn">contextlib2</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="kn">import</span> <span class="n">dataset_util</span>
+<span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="kn">import</span> <span class="n">label_map_util</span>
+<span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="kn">import</span> <span class="n">config_util</span>
+<span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="kn">import</span> <span class="n">visualization_utils</span> <span class="k">as</span> <span class="n">viz_utils</span>
+<span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="kn">import</span> <span class="n">colab_utils</span>
+<span class="kn">from</span> <span class="nn">object_detection.builders</span> <span class="kn">import</span> <span class="n">model_builder</span>
+<span class="kn">from</span> <span class="nn">object_detection.dataset_tools</span> <span class="kn">import</span> <span class="n">tf_record_creation_util</span>
+
+
+<span class="c1"># Enable GPU dynamic memory allocation</span>
+<span class="n">gpus</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">gpu</span> <span class="ow">in</span> <span class="n">gpus</span><span class="p">:</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">set_memory_growth</span><span class="p">(</span><span class="n">gpu</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#Suppress TensorFlow logging</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TF_CPP_MIN_LOG_LEVEL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2&#39;</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="s1">&#39;ERROR&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Prepare-Tensorflow-2-Object-Detection-Training-Data">Prepare Tensorflow 2 Object Detection Training Data<a class="anchor-link" href="#Prepare-Tensorflow-2-Object-Detection-Training-Data"> </a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Tensorflow object detection API expects the data to be in the form of <strong>TFRecords</strong> . In this part we are going to convert our data present in <strong>Pascal-VOC</strong> format into <strong>TFRecords</strong>.</p>
+<p>To do this we will implement the following the steps:</p>
+<ul>
+<li><p>Iterate over all the annotations and partition the annotations into train and test datasets. The train annotatins and images will be saved to <strong>/content/workspace/annotations/train</strong> &amp; <strong>/content/workspace/images/train</strong> respectively. Similarly the test data will be saved to <strong>/content/workspace/annotations/test</strong> &amp; <strong>/content/workspace/images/test</strong> .</p>
+</li>
+<li><p>Convert all the <code>*.xml</code> annotation files into a single Pandas DataFrame object.</p>
+</li>
+<li><p>We will create a tensoflow 2 object detection format label-map which will be used in training/evaluation the model .</p>
+</li>
+<li><p>Use this Pandas DataFrame to create <strong>TFRecords</strong> for the train and test datasets. The <strong>TFRecords</strong> will be saved to <strong>/content/workspace/data/</strong>.</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.-Partition-the-Dataset-:">1. <strong>Partition the Dataset</strong> :<a class="anchor-link" href="#1.-Partition-the-Dataset-:"> </a></h2><p>If we look at the data that is saved in <strong>/content/images/</strong> &amp; <strong>/content/annotations/</strong> we will see that not all the images have the corresponding annotations and the images and annotations are saved as <strong>{filename}.jpeg</strong> &amp; <strong>{filename}.xml</strong> respectively.</p>
+<p>What we will do is we will first split the images using <code>sklearn.train_test_split</code> into a train and test dataset. Then we will check for the corresponding annotation for the image . If the annotation file exists we will copy the image and annotation into their repectives directories under <strong>/content/workspace</strong> .</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_images</span>    <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">IMAGE_DIR</span><span class="p">)</span>
+
+<span class="c1">#Split the images into train and test datasets</span>
+<span class="n">train_images</span><span class="p">,</span> <span class="n">test_images</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">all_images</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">123</span><span class="p">)</span> 
+
+<span class="c1">#Grab the list of all the annotations for the train and test images</span>
+<span class="c1">#Some annotations may not exist we will filter these in the next cell</span>
+<span class="n">train_xmls</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.xml&quot;</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">train_images</span><span class="p">]</span>
+<span class="n">test_xmls</span>  <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.xml&quot;</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">test_images</span> <span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">move_file</span><span class="p">(</span><span class="n">fileList</span> <span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This Fn copy&#39;s files from a given fileList from src to dest</span>
+<span class="sd">    if the file exits.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fileList: List containing all the files present in the src directory.</span>
+<span class="sd">        src     : source directory for the files.</span>
+<span class="sd">        dest    : destination where to copy the files present in fileList.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">fileList</span><span class="p">):</span>
+        <span class="n">fileName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="c1">#Check if the file exits, if the file exits copy contents from src to dest</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">fileName</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+
+
+
+<span class="c1">#Move images and annotations to workspace directory</span>
+<span class="n">move_file</span><span class="p">(</span><span class="n">train_images</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="n">IMAGE_DIR</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;/content/workspace/images/train/&quot;</span><span class="p">)</span>
+<span class="n">move_file</span><span class="p">(</span><span class="n">test_images</span><span class="p">,</span>  <span class="n">src</span><span class="o">=</span><span class="n">IMAGE_DIR</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;/content/workspace/images/test/&quot;</span><span class="p">)</span>
+
+<span class="n">move_file</span><span class="p">(</span><span class="n">train_xmls</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="n">ANNOT_DIR</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;/content/workspace/annotations/train/&quot;</span><span class="p">)</span>
+<span class="n">move_file</span><span class="p">(</span><span class="n">test_xmls</span><span class="p">,</span>  <span class="n">src</span><span class="o">=</span><span class="n">ANNOT_DIR</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;/content/workspace/annotations/test/&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2.-Create-Pandas-DataFrame-Object-:">2. <strong>Create Pandas DataFrame Object</strong> :<a class="anchor-link" href="#2.-Create-Pandas-DataFrame-Object-:"> </a></h2><p>Now, that we have partitioned our dataset and the images/annotations are present in the repective directories we will now create a pandas dataframe from the <code>*.xml</code> files . The DataFrame will contrain the fillowing information:</p>
+<ul>
+<li><strong><code>filename</code></strong> <code>(str)</code>: Path to the image file.</li>
+<li><strong><code>width</code></strong>    <code>(float/int)</code>: Absolute width of the image.</li>
+<li><strong><code>height</code></strong> <code>(float/int)</code>: Absolute height of the image.</li>
+<li><strong><code>labels</code></strong> <code>(str)</code>: The class of the object present in the bounding box.    </li>
+<li><strong><code>xmin</code></strong> <code>(float/int)</code>: Absolute <code>xmin</code> co-ordinate for the bounding box.</li>
+<li><strong><code>ymin</code></strong> <code>(float/int)</code>: Absolute <code>ymin</code> co-ordinate for the bounding box.</li>
+<li><strong><code>xmax</code></strong> <code>(float/int)</code>: Absolute <code>xmax</code> co-ordinate for the bounding box.   </li>
+<li><strong><code>ymax</code></strong> <code>(float/int)</code>: Absolute <code>ymax</code> co-ordinate for the bounding box.</li>
+<li><strong><code>encoded_label</code></strong> <code>(int)</code>: The label for the object in the bounding box. 0 represents always the background class.</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#from the filename.</span>
+<span class="n">exp</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;/([^/]+)_\d+.jpg$&quot;</span>
+<span class="n">exp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+
+<span class="c1">#sklearn.LabelEncoder will be used to convert the class of the object into integer format.</span>
+<span class="n">le</span>  <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">xml2pandas</span><span class="p">(</span><span class="n">annot_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fn converts the xml files into a pandas dataframe.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        annot_dir: Directory where all the *.xml annotation files are stored</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xml_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">xml_file</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">annot_dir</span> <span class="o">+</span> <span class="s1">&#39;/*.xml&#39;</span><span class="p">)):</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_file</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                <span class="n">member</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">member</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">member</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">member</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">member</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">xml_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">column_name</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">,</span><span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;xmin&#39;</span><span class="p">,</span> <span class="s1">&#39;ymin&#39;</span><span class="p">,</span> <span class="s1">&#39;xmax&#39;</span><span class="p">,</span> <span class="s1">&#39;ymax&#39;</span><span class="p">]</span>
+        <span class="n">xml_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">xml_list</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;DataFrame Generated ! &quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xml_df</span>
+
+
+<span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">annotDir</span><span class="p">,</span> <span class="n">imageDir</span><span class="p">,</span> <span class="n">image_set</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fn creates a pandas DataFrame object from the annotation in annotDir</span>
+<span class="sd">    and images in imageDir. This Fn also extracts the name of the class from the</span>
+<span class="sd">    filename and converts it into integer labels starting from 1 as 0 is reserved</span>
+<span class="sd">    for the background class always.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        annotDir  : directory where the *.xml annotation files are stored.</span>
+<span class="sd">        imageDir  : directory where all the images are stored.</span>
+<span class="sd">        image_set : one of either `train` or `test`, this use when converting </span>
+<span class="sd">                    the class objects into integer formats.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">xml2pandas</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+    <span class="c1">#modify the filename to point to the original filename</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">imageDir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span> <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+    <span class="c1">#extract the class labels from the filenames</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))]</span>
+    <span class="c1">#encoded the labels into integers starting from 1</span>
+    <span class="k">if</span> <span class="n">image_set</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span> <span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;encoded_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">image_set</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span> <span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;encoded_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">TRAIN_IMAGE_DIR</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/images/train/&quot;</span>
+<span class="n">TEST_IMAGE_DIR</span>  <span class="o">=</span> <span class="s2">&quot;/content/workspace/images/test/&quot;</span>
+<span class="n">TRAIN_ANNOTATION_DIR</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/annotations/train/&quot;</span>
+<span class="n">TEST_ANNOTATION_DIR</span>  <span class="o">=</span> <span class="s2">&quot;/content/workspace/annotations/test/&quot;</span>
+
+<span class="c1">#Create pandas datafame from the *.xml files</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">process_data</span><span class="p">(</span><span class="n">TRAIN_ANNOTATION_DIR</span><span class="p">,</span> <span class="n">TRAIN_IMAGE_DIR</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">)</span>
+<span class="n">test_data</span>  <span class="o">=</span> <span class="n">process_data</span><span class="p">(</span><span class="n">TEST_ANNOTATION_DIR</span><span class="p">,</span> <span class="n">TEST_IMAGE_DIR</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">train_data</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="c1">#remove the missing file</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2"> is missing in train_data&quot;</span><span class="p">)</span>
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="n">train_data</span><span class="o">.</span><span class="n">filename</span> <span class="o">!=</span> <span class="n">f</span><span class="p">]</span>
+        <span class="n">train_data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">test_data</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="c1">#remove the missing file</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2"> missing in test_data&quot;</span><span class="p">)</span>
+        <span class="n">test_data</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="n">test_data</span><span class="o">.</span><span class="n">filename</span> <span class="o">!=</span> <span class="n">f</span><span class="p">]</span>
+        <span class="n">test_data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.-Create-Label-Map-:">3. <strong>Create Label Map</strong> :<a class="anchor-link" href="#3.-Create-Label-Map-:"> </a></h2><p>TensorFlow requires dataset to have a label map associated with it. This label map defines a mapping from string class names to integer class Ids. The label map should be a StringIntLabelMap text protobuf. Label map files have the extention <code>.pbtxt</code> and  we will place it under <strong>/content/workspace/data</strong> along with the <strong>TFRecod</strong> files which we will create in the next step.</p>
+<p>An example label map <code>(e.g label_map.pbtxt)</code>, assuming that our dataset containes 2 labels, dogs and cats looks like this :</p>
+
+<pre><code>item {
+    id: 1
+    name: 'cat'
+}
+
+item {
+    id: 2
+    name: 'dog'
+}</code></pre>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">unique_labels</span>  <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+<span class="n">integer_labels</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">unique_labels</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="n">label_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">unique_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">integer_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_labels</span><span class="p">))}</span>
+
+<span class="n">label_map</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/data/label_map.pbtxt&quot;</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">categories</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>	
+
+<span class="n">end</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="s1">&#39;item&#39;</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="n">end</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="n">s</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="s1">&#39;id:&#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span> <span class="o">+</span> <span class="n">end</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="n">s</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="s1">&#39;name:&#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">end</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="s1">&#39;}&#39;</span> <span class="o">+</span> <span class="n">end</span><span class="o">*</span><span class="mi">2</span>
+    
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">label_map</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our <strong><code>label_map.pbtxt</code></strong> file will look like this :</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <strong><code>label_map.pbtxt</code></strong> file has been placed under <strong>/content/workspace/data/label_map.pbtxt</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.-Create-TensorFlow-Records-:">4. <strong>Create TensorFlow Records</strong> :<a class="anchor-link" href="#4.-Create-TensorFlow-Records-:"> </a></h2><p>In this step we will convert our annotatinos present in the pandas dataframe object into <strong>TFRecord</strong> format.</p>
+<p>For every example in our dataset, we should have the following information:</p>
+<ul>
+<li>An RGB image for the dataset encoded as jpeg or png.</li>
+<li>A bounding box coordinates for each image <code>(with origin in top left corner)</code> defined by 4 floating point numbers <code>[ymin, xmin, ymax, xmax]</code>.</li>
+<li>The class of the object in the bounding box.
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>For the bounding-boxes, the normalized coordinates (x / width, y / height) are stored in the <strong>TFRecord</strong> dataset. 
+</div></li>
+</ul>
+<p>Since our dataset has more than a fairly large number of annotations we will shard your dataset into multiple files.
+Instead of writing all tf.Example protos to a single file we will store the dataset into multiple files .</p>
+<p>Our dataset is going to look something like this:</p>
+<div class="highlight"><pre><span></span>/<span class="o">{</span>directory_path<span class="o">}</span>/dataset.record-00000-00010
+/<span class="o">{</span>directory_path<span class="o">}</span>/dataset.record-00001-00010
+...
+/<span class="o">{</span>directory_path<span class="o">}</span>/dataset.record-00009-00010
+</pre></div>
+<p>Our train dataset is going to be stored as :</p>
+<div class="highlight"><pre><span></span>/content/workspace/data/train.record-00000-of-00010
+/content/workspace/data/train.record-00001-of-00010
+...
+/content/workspace/data/train.record-00009-of-00010
+</pre></div>
+<p>Similary for the test dataset :</p>
+<div class="highlight"><pre><span></span>/content/workspace/data/test.record-00000-of-00010
+/content/workspace/data/test.record-00001-of-00010
+...
+/content/workspace/data/test.record-00009-of-00010
+</pre></div>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">create_tf_example</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a tf.Example proto from a single image</span>
+<span class="sd">    from the given data</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fname: filename of a single image from data.</span>
+<span class="sd">        data : a pandas dataframe object in the format </span>
+<span class="sd">               specified in step 2. </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        example: The created tf.Example.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">curr_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">filename</span> <span class="o">==</span> <span class="n">fname</span><span class="p">]</span>
+    
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="c1"># Filename of the image</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">curr_data</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Image height</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">curr_data</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Image width</span>
+    
+    <span class="n">image_format</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;jpeg&#39;</span> <span class="c1"># b&#39;jpeg&#39; or b&#39;png&#39;</span>
+    
+    <span class="c1"># List of normalized left x coordinates in bounding box (1 per box).</span>
+    <span class="n">xmins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">curr_data</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">width</span><span class="p">)</span> 
+    <span class="c1"># List of normalized right x coordinates in bounding box (1 per box).</span>
+    <span class="n">xmaxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">curr_data</span><span class="p">[</span><span class="s2">&quot;xmax&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">width</span><span class="p">)</span> 
+    <span class="c1"># List of normalized top y coordinates in bounding box (1 per box).</span>
+    <span class="n">ymins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">curr_data</span><span class="p">[</span><span class="s2">&quot;ymin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">height</span><span class="p">)</span>
+    <span class="c1"># List of normalized bottom y coordinates in bounding box (1 per box).</span>
+    <span class="n">ymaxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">curr_data</span><span class="p">[</span><span class="s2">&quot;ymax&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">height</span><span class="p">)</span>
+    
+    <span class="c1"># List of string class name of bounding box (1 per box)</span>
+    <span class="n">classes_text</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">curr_data</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">classes_text</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">classes_text</span><span class="p">]</span>
+    
+    <span class="c1"># List of integer class id of bounding box (1 per box)</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">curr_data</span><span class="p">[</span><span class="s2">&quot;encoded_label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> 
+
+    <span class="k">with</span> <span class="n">tf1</span><span class="o">.</span><span class="n">gfile</span><span class="o">.</span><span class="n">GFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+        <span class="n">encoded_image_data</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># Encoded image bytes</span>
+
+    <span class="n">features</span> <span class="o">=</span> <span class="n">tf1</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Example</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="n">tf1</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Features</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="p">{</span>
+      <span class="s1">&#39;image/height&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">int64_feature</span><span class="p">(</span><span class="n">height</span><span class="p">),</span>
+      <span class="s1">&#39;image/width&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">int64_feature</span><span class="p">(</span><span class="n">width</span><span class="p">),</span>
+      <span class="s1">&#39;image/filename&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">bytes_feature</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span>
+      <span class="s1">&#39;image/source_id&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">bytes_feature</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span>
+      <span class="s1">&#39;image/encoded&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">bytes_feature</span><span class="p">(</span><span class="n">encoded_image_data</span><span class="p">),</span>
+      <span class="s1">&#39;image/format&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">bytes_feature</span><span class="p">(</span><span class="n">image_format</span><span class="p">),</span>
+      <span class="s1">&#39;image/object/bbox/xmin&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">float_list_feature</span><span class="p">(</span><span class="n">xmins</span><span class="p">),</span>
+      <span class="s1">&#39;image/object/bbox/xmax&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">float_list_feature</span><span class="p">(</span><span class="n">xmaxs</span><span class="p">),</span>
+      <span class="s1">&#39;image/object/bbox/ymin&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">float_list_feature</span><span class="p">(</span><span class="n">ymins</span><span class="p">),</span>
+      <span class="s1">&#39;image/object/bbox/ymax&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">float_list_feature</span><span class="p">(</span><span class="n">ymaxs</span><span class="p">),</span>
+      <span class="s1">&#39;image/object/class/text&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">bytes_list_feature</span><span class="p">(</span><span class="n">classes_text</span><span class="p">),</span>
+      <span class="s1">&#39;image/object/class/label&#39;</span><span class="p">:</span> <span class="n">dataset_util</span><span class="o">.</span><span class="n">int64_list_feature</span><span class="p">(</span><span class="n">classes</span><span class="p">),</span>
+      <span class="p">}))</span>
+    
+    <span class="k">return</span> <span class="n">features</span>
+
+
+<span class="k">def</span> <span class="nf">create_records</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">shards</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fn iterates over all the annotations in dataset and creates a </span>
+<span class="sd">    sharded TFRecord dataset and additionally saves the sharded TFRecord dataset</span>
+<span class="sd">    to output path.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path: Path where to save the dataset</span>
+<span class="sd">        data       : A pandas Dataframe object as specified in step-2.</span>
+<span class="sd">        shards     : Number of the shards over which to save the dataset.</span>
+<span class="sd">                     The dataset is going to saved inside `shards` no. of files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">tf1</span><span class="o">.</span><span class="n">python_io</span><span class="o">.</span><span class="n">TFRecordWriter</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+
+    <span class="k">with</span> <span class="n">contextlib2</span><span class="o">.</span><span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">tf_record_close_stack</span><span class="p">:</span>
+        <span class="n">output_tfrecords</span> <span class="o">=</span> <span class="n">tf_record_creation_util</span><span class="o">.</span><span class="n">open_sharded_output_tfrecords</span><span class="p">(</span><span class="n">tf_record_close_stack</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">shards</span><span class="p">)</span>
+        <span class="c1">#enumerate over all the unique images present in the dataset</span>
+        <span class="c1">#and create a tf.Example proto for the particular annotations.</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">fname</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">fnames</span><span class="p">)):</span>
+            <span class="n">tf_example</span> <span class="o">=</span> <span class="n">create_tf_example</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="n">output_shard_index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">%</span> <span class="n">shards</span>
+            <span class="n">output_tfrecords</span><span class="p">[</span><span class="n">output_shard_index</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tf_example</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">create_records</span><span class="p">(</span><span class="s2">&quot;/content/workspace/data/train.record&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">train_data</span><span class="p">)</span>
+<span class="n">create_records</span><span class="p">(</span><span class="s2">&quot;/content/workspace/data/test.record&quot;</span><span class="p">,</span>  <span class="n">data</span><span class="o">=</span><span class="n">test_data</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our dataset is now prepared for training using a model from <strong><a href="https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md">TensorFlow 2 Detection Model Zoo</a></strong> .</p>
+<p>The directory structure for the workspace should look something like this at this stage:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Configure-Custom-TensorFlow2-Object-Detection-Training-Configuration">Configure Custom TensorFlow2 Object Detection Training Configuration<a class="anchor-link" href="#Configure-Custom-TensorFlow2-Object-Detection-Training-Configuration"> </a></h1><blockquote><p>In this section we will download a pretrained-model from the <a href="https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md">TF2 OD model zoo</a> and set up out training configuration.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this tutorial we are going to implement the lightweight, smallest state of the art <strong>efficientdet model</strong>.</p>
+<p>We will create a directory call pretrained-models in our wokspace folder.</p>
+<p>We will download the latest pre-trained network for the model we wish to use. This can be in <a href="https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md">TensorFlow 2 Detection Model Zoo</a>.</p>
+<p>Once the <strong>*.tar.gz</strong> file has been downloaded, we will extract the file contents into. <strong>/content/workspace/pre-trained-models</strong> .</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#LINK : http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d0_coco17_tpu-32.tar.gz</span>
+<span class="n">model_name</span> <span class="o">=</span> <span class="s2">&quot;efficientdet_d0_coco17_tpu-32&quot;</span>
+<span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;efficientdet_d0_coco17_tpu-32.tar.gz&quot;</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;/content/workspace/pre_trained_models/&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">download_tar</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://download.tensorflow.org/models/object_detection/tf2/20200711/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="o">!</span>wget <span class="o">{</span>download_tar<span class="o">}</span> -P <span class="s2">&quot;/content/workspace/pre_trained_models/&quot;</span>
+
+<span class="n">tar</span> <span class="o">=</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/content/workspace/pre_trained_models/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/content/workspace/pre_trained_models/&quot;</span><span class="p">)</span>
+<span class="n">tar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/content/workspace/pre_trained_models/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The directory structure for the workspace should look something like this at this stage:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we have downloaded and extracted our pre-trained model, let’s create a directory for our training job. Under the <strong>/content/workspace/</strong> create a new directory named <strong>models</strong> this will be the folder where  we will store all the configurations, model_checkpoints, logs for our custom trained model.</p>
+<p>Under the <strong>/content/workspace/models/</strong> dir create a dir named as <strong>efficientdet_d0_coco17_tpu-32</strong> and copy the <strong>/content/workspace/pre-trained-models/efficientdet_d0_coco17_tpu-32/pipeline.config</strong> file inside the newly created directory.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;/content/workspace/models/&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/content/workspace/models/</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">config_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/content/workspace/pre_trained_models/</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">/pipeline.config&quot;</span>
+<span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/content/workspace/models/</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each model has a model_name, a pipeline.config file, a pretrained_checkpoint.</p>
+<p>The pipeline.config file is a shell of a training configuration specific to each model type, provided by the authors of the TF2 OD repository.</p>
+<p>The pretrained_checkpoint is the location of a pretrained weights file saved from when the object detection model was pretrained on the COCO dataset.</p>
+<p>We will start from these weights, and then fine tune into our particular custom dataset task. By using pretraining, our model does not need to start from square one in identifying what features might be useful for object detection.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will map our training data files to variables for use in our computer vision training pipeline configuration.</p>
+<p>We will now edit the <strong>/content/workspace/models/pipeline.config</strong> to point to our custom data, the pretrained_checkpoint, and we also specify some training parameters.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_record_fname</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/data/test.record-?????-of-00010&quot;</span>
+<span class="n">train_record_fname</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/data/train.record-?????-of-00010&quot;</span>
+
+<span class="c1">#Path to the TensorFlow Object Detection format label_map</span>
+<span class="n">label_map_pbtxt_fname</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/data/label_map.pbtxt&quot;</span>
+
+<span class="c1">#Path to the pipeline.config file</span>
+<span class="n">config_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/content/workspace/models/</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">/pipeline.config&quot;</span>
+
+<span class="c1">#Path to the pretrained model checkpoints </span>
+<span class="n">fine_tune</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/content/workspace/pre_trained_models/</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">/checkpoint/ckpt-0&quot;</span>
+
+<span class="c1">#if you can fit a large batch in memory, it may speed up your training</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="c1">#The more steps, the longer the training</span>
+<span class="n">num_steps</span> <span class="o">=</span>  <span class="mi">50000</span>
+
+<span class="n">model_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/content/workspace/models/</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">get_num_classes</span><span class="p">(</span><span class="n">pbtxt_fname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get total number of classes from label_map.pbtxt file&quot;&quot;&quot;</span>
+    <span class="n">label_map</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">load_labelmap</span><span class="p">(</span><span class="n">pbtxt_fname</span><span class="p">)</span>
+    <span class="n">categories</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">convert_label_map_to_categories</span><span class="p">(</span>
+        <span class="n">label_map</span><span class="p">,</span> <span class="n">max_num_classes</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">use_display_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">category_index</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">create_category_index</span><span class="p">(</span><span class="n">categories</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">category_index</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+
+<span class="n">num_classes</span> <span class="o">=</span> <span class="n">get_num_classes</span><span class="p">(</span><span class="n">label_map_pbtxt_fname</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CUSTOM CONFIGURATION PARAMETERS : &quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Config Path: &quot;</span><span class="p">,</span> <span class="n">config_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Checkpoint Path: &quot;</span><span class="p">,</span> <span class="n">fine_tune</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Label Map: &quot;</span><span class="p">,</span> <span class="n">label_map_pbtxt_fname</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train TFRecords: &quot;</span><span class="p">,</span> <span class="n">train_record_fname</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test TFRecords: &quot;</span><span class="p">,</span> <span class="n">test_record_fname</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total Steps: &quot;</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Num classes: &quot;</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="c1"># fine_tune_checkpoint</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;fine_tune_checkpoint: &quot;.*?&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;fine_tune_checkpoint: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fine_tune</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+    <span class="c1"># tfrecord files train and test</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;(input_path: &quot;.*?)(PATH_TO_BE_CONFIGURED/train)(.*?&quot;)&#39;</span><span class="p">,</span> <span class="s1">&#39;input_path: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">train_record_fname</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;(input_path: &quot;.*?)(PATH_TO_BE_CONFIGURED/val)(.*?&quot;)&#39;</span><span class="p">,</span> <span class="s1">&#39;input_path: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_record_fname</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+    <span class="c1"># label_map_path</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;label_map_path: &quot;.*?&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;label_map_path: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_map_pbtxt_fname</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+    <span class="c1"># Set training batch_size.</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;batch_size: [0-9]+&#39;</span><span class="p">,</span><span class="s1">&#39;batch_size: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">batch_size</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+    <span class="c1"># Set training steps, num_steps</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;num_steps: [0-9]+&#39;</span><span class="p">,</span> <span class="s1">&#39;num_steps: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_steps</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+    <span class="c1"># Set number of classes num_classes.</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;num_classes: [0-9]+&#39;</span><span class="p">,</span><span class="s1">&#39;num_classes: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_classes</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+    <span class="c1">#fine-tune checkpoint type</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;fine_tune_checkpoint_type: &quot;classification&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;fine_tune_checkpoint_type: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;detection&#39;</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+        
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After slotting in out custom parameters into the <strong>pipeline.config</strong> file we will have a configuration file that is going to look something like this:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Train-Custom-TF2-Object-Detector">Train Custom TF2 Object Detector<a class="anchor-link" href="#Train-Custom-TF2-Object-Detector"> </a></h1><p>To initiate a new training job, we need to run the script <strong>/content/models/research/object_detection/model_main_tf2.py</strong></p>
+<ul>
+<li><p>config_path: path to the configuration file defined above in writing custom training configuration.</p>
+</li>
+<li><p>model_dir: the location tensorboard logs and saved model checkpoints will save to</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>python /content/models/research/object_detection/model_main_tf2.py <span class="err">\</span>
+    <span class="o">--</span><span class="n">pipeline_config_path</span><span class="o">=</span><span class="p">{</span><span class="n">config_path</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">model_dir</span><span class="o">=</span><span class="p">{</span><span class="n">model_dir</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">alsologtostderr</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To evaluate our model on COCO-Evaluation metrics we need to run the script <strong>/content/models/research/object_detection/model_main_tf2.py</strong> .
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>This process automatically evaluates the model on the latest checkpoints that the training job generates. So we can also run this script in the backgound as our model keeps training and as checkpoints are generated the script will automatically evaluate the model on the COCO-metrics.
+</div></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>python /content/models/research/object_detection/model_main_tf2.py <span class="err">\</span>
+    <span class="o">--</span><span class="n">pipeline_config_path</span><span class="o">=</span><span class="p">{</span><span class="n">config_path</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">model_dir</span><span class="o">=</span><span class="p">{</span><span class="n">model_dir</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">checkpoint_dir</span><span class="o">=</span><span class="p">{</span><span class="n">model_dir</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">alsologtostderr</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Monitor Training Job Progress using TensorBoard:</strong></p>
+<p>We can either use one of the 2 commands:</p>
+<ul>
+<li><p>To open in a terminal :</p>
+<div class="highlight"><pre><span></span>tensorboard --logdir <span class="s2">&quot;/content/workspace/models/efficientdet_d0_coco17_tpu-32/</span>
+</pre></div>
+</li>
+<li><p>For a Jupyter-Environment:</p>
+<div class="highlight"><pre><span></span><span class="o">%</span><span class="n">tensorboard</span> <span class="o">--</span><span class="n">logdir</span> <span class="s2">&quot;/content/workspace/models/efficientdet_d0_coco17_tpu-32/&quot;</span>
+</pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will have logs that are going to look similar to this :</p>
+<p><img src="https://www.dropbox.com/s/b3pvc7po59xcvmc/demo_logs.png?raw=1" alt="logs" /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Exporting-a-Trained-Inference-Graph">Exporting a Trained Inference Graph<a class="anchor-link" href="#Exporting-a-Trained-Inference-Graph"> </a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once your training job is complete, you need to extract the newly trained inference graph, which will be later used to perform the object detection. This can be done as follows:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">ls</span> &quot;/content/workspace/models/efficientdet_d0_coco17_tpu-32/&quot;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;/content/workspace/exported_models/efficientdet_d0&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#which will be later used to perform the object detection</span>
+
+<span class="c1">#path to save the exporter inference graph</span>
+<span class="n">output_directory</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/exported_models/efficientdet_d0&quot;</span>
+
+<span class="c1">#path to trained model checkpoints</span>
+<span class="n">checkpoint_dir</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/models/efficientdet_d0_coco17_tpu-32/&quot;</span>
+
+<span class="c1">#run script to export model weights</span>
+<span class="o">!</span>python /content/models/research/object_detection/exporter_main_v2.py <span class="err">\</span>
+    <span class="o">--</span><span class="n">trained_checkpoint_dir</span> <span class="p">{</span><span class="n">checkpoint_dir</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">output_directory</span> <span class="p">{</span><span class="n">output_directory</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">pipeline_config_path</span> <span class="p">{</span><span class="n">config_path</span><span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's checkout our directory structure :</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the next part we are going to use this exported graph to do inference on custom images</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Run-Inference-on-Test-Images-with-Custom-TensorFlow2-Object-Detector">Run Inference on Test Images with Custom TensorFlow2 Object Detector<a class="anchor-link" href="#Run-Inference-on-Test-Images-with-Custom-TensorFlow2-Object-Detector"> </a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this section we will run inference on images using our Custom TensorFlow2 Object Detector exported graph</p>
+<p>To run inference we will create a few helper functions first:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">load_image_into_numpy_array</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Load an image from file into a numpy array.</span>
+
+<span class="sd">  Puts image into numpy array to feed into tensorflow graph.</span>
+<span class="sd">  Note that by convention we put it into a numpy array with shape</span>
+<span class="sd">  (height, width, channels), where channels=3 for RGB.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    path: the file path to the image</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    uint8 numpy array with shape (img_height, img_width, 3)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">img_data</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">gfile</span><span class="o">.</span><span class="n">GFile</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+  <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">img_data</span><span class="p">))</span>
+  <span class="p">(</span><span class="n">im_width</span><span class="p">,</span> <span class="n">im_height</span><span class="p">)</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">getdata</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">im_height</span><span class="p">,</span> <span class="n">im_width</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">model_dir</span><span class="p">):</span>
+    <span class="n">model_dir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">model_dir</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;saved_model&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">saved_model</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">model_dir</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Load in the <strong>category_index</strong>, which is a dictionary mapping of the classes and the index labels &amp; the <strong>Custom TensorFlow2 Object Detector</strong> from the exported graph</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">PATH_TO_LABELS</span> <span class="o">=</span> <span class="s2">&quot;/content/workspace/data/label_map.pbtxt&quot;</span>
+<span class="c1">#generate a category index dictionary from the label map</span>
+<span class="n">category_index</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">create_category_index_from_labelmap</span><span class="p">(</span><span class="n">PATH_TO_LABELS</span><span class="p">,</span> <span class="n">use_display_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#path to the images from the test directory we will reun inference on these images</span>
+<span class="n">PATH_TO_TEST_IMAGES_DIR</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/content/workspace/images/test/&quot;</span><span class="p">)</span>
+<span class="n">TEST_IMAGE_PATHS</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">PATH_TO_TEST_IMAGES_DIR</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.jpg&quot;</span><span class="p">)))</span>
+
+
+<span class="c1">#Load model from the exported model graph</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading model...&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">detection_model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s2">&quot;/content/workspace/exported_models/efficientdet_d0&quot;</span><span class="p">)</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done! Took </span><span class="si">{}</span><span class="s1"> seconds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">run_inference_for_single_image</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fn to run inference on a single image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="c1"># The input needs to be a tensor, convert it using `tf.convert_to_tensor`.</span>
+    <span class="n">input_tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="c1"># The model expects a batch of images, so add an axis with `tf.newaxis`.</span>
+    <span class="n">input_tensor</span> <span class="o">=</span> <span class="n">input_tensor</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="c1"># Run inference</span>
+    <span class="n">model_fn</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">signatures</span><span class="p">[</span><span class="s1">&#39;serving_default&#39;</span><span class="p">]</span>
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">)</span>
+    
+    <span class="c1"># All outputs are batches tensors.</span>
+    <span class="c1"># Convert to numpy arrays, and take index [0] to remove the batch dimension</span>
+    <span class="c1"># We&#39;re only interested in the first num_detections.</span>
+    <span class="n">num_detections</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">output_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;num_detections&#39;</span><span class="p">))</span>
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="n">num_detections</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">output_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;num_detections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_detections</span>
+    <span class="c1"># detection_classes should be ints.</span>
+    <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_classes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_classes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    
+    <span class="c1"># Handle models with masks</span>
+    <span class="k">if</span> <span class="s1">&#39;detection_masks&#39;</span> <span class="ow">in</span> <span class="n">output_dict</span><span class="p">:</span>
+        <span class="c1"># Reframe the the bbox mask to the image size.</span>
+        <span class="n">detection_masks_reframed</span> <span class="o">=</span> <span class="n">utils_ops</span><span class="o">.</span><span class="n">reframe_box_masks_to_image_masks</span><span class="p">(</span>
+            <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_masks&#39;</span><span class="p">],</span> <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_boxes&#39;</span><span class="p">],</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+            <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span>      
+        
+        <span class="n">detection_masks_reframed</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">detection_masks_reframed</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_masks_reframed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detection_masks_reframed</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">output_dict</span>
+
+
+<span class="k">def</span> <span class="nf">show_inference</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">image_path</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs infernce on the given image at the image_path and also</span>
+<span class="sd">    draws the bounding box over the image .</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># the array based representation of the image will be used later in order to prepare the</span>
+    <span class="c1"># result image with boxes and labels on it.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Running inference for </span><span class="si">{}</span><span class="s1">... &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image_path</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">image_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_path</span><span class="p">))</span>
+    <span class="c1"># Actual detection.</span>
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">run_inference_for_single_image</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">image_np</span><span class="p">)</span>
+    <span class="c1"># Visualization of the results of a detection.</span>
+    <span class="n">viz_utils</span><span class="o">.</span><span class="n">visualize_boxes_and_labels_on_image_array</span><span class="p">(</span>
+        <span class="n">image_np</span><span class="p">,</span>
+        <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_boxes&#39;</span><span class="p">],</span>
+        <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_classes&#39;</span><span class="p">],</span>
+        <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_scores&#39;</span><span class="p">],</span>
+        <span class="n">category_index</span><span class="p">,</span>
+        <span class="n">instance_masks</span><span class="o">=</span><span class="n">output_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detection_masks_reframed&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">use_normalized_coordinates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">max_boxes_to_draw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">min_score_thresh</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+        <span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done !&#39;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">image_np</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Using the helper functions defined above let's run inference on Images :</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">TEST_IMAGE_PATHS</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">TEST_IMAGE_PATHS</span><span class="p">))]</span>
+<span class="c1">#Run inference over the image and display the results</span>
+<span class="n">show_inference</span><span class="p">(</span><span class="n">detection_model</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">TEST_IMAGE_PATHS</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">TEST_IMAGE_PATHS</span><span class="p">))]</span>
+<span class="c1">#Run inference over the image and display the results</span>
+<span class="n">show_inference</span><span class="p">(</span><span class="n">detection_model</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">TEST_IMAGE_PATHS</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">TEST_IMAGE_PATHS</span><span class="p">))]</span>
+<span class="c1">#Run inference over the image and display the results</span>
+<span class="n">show_inference</span><span class="p">(</span><span class="n">detection_model</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="benihime91/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/machinelearning%20deeplearning%20tensorflow2.x%20tensorflow-object-detection/2020/11/02/tensorflow-object-detection.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Tips, Tricks and Tutorials for Deep-Learning enthusiasts.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/benihime91" title="benihime91"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/Ayushma75139217" title="Ayushma75139217"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
