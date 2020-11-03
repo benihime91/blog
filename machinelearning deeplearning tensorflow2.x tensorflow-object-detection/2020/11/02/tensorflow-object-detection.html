@@ -143,6 +143,13 @@ window.onload = wrap_img;
         
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://colab.research.google.com/github/benihime91/blog/blob/master/_notebooks/2020-11-02-tensorflow-object-detection.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" /></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p><div class="flash flash-warn">
     <svg class="octicon octicon-zap octicon octicon-zap octicon octicon-zap" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.561 1.5a.016.016 0 00-.01.004L3.286 8.571A.25.25 0 003.462 9H6.75a.75.75 0 01.694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0012.538 7H9.25a.75.75 0 01-.683-1.06l2.008-4.418.003-.006a.02.02 0 00-.004-.009.02.02 0 00-.006-.006L10.56 1.5zM9.504.43a1.516 1.516 0 012.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 01-.871.354h-.302a1.25 1.25 0 01-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429z"></path></svg>
     <strong>Important: </strong>This guide is based on <a href="https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html">official tutorial</a> and could intersect with this <a href="(https://blog.roboflow.com/train-a-tensorflow2-object-detection-model/">Tutorial from Roboflow-Team</a>. 
@@ -219,7 +226,7 @@ window.onload = wrap_img;
 cd models/research/
 protoc object_detection/protos/*.proto --python_out=.
 cp object_detection/packages/tf2/setup.py .
-python -m pip install .
+python -m pip install . --quiet
 </pre></div>
 
     </div>
@@ -250,7 +257,7 @@ OK (skipped=1)</code></pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#run model builder test to </span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#run model builder test to ensure everything is up and runnning</span>
 <span class="o">!</span>python /content/models/research/object_detection/builders/model_builder_tf2_test.py
 </pre></div>
 
@@ -406,10 +413,6 @@ OK (skipped=1)</code></pre>
 <span class="n">gpus</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">gpu</span> <span class="ow">in</span> <span class="n">gpus</span><span class="p">:</span>
     <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">set_memory_growth</span><span class="p">(</span><span class="n">gpu</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-
-<span class="c1">#Suppress TensorFlow logging</span>
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TF_CPP_MIN_LOG_LEVEL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2&#39;</span>
-<span class="n">tf</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="s1">&#39;ERROR&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -519,10 +522,10 @@ OK (skipped=1)</code></pre>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 5914/5914 [00:01&lt;00:00, 3151.13it/s]
-100%|██████████| 1479/1479 [00:00&lt;00:00, 2202.52it/s]
-100%|██████████| 5914/5914 [00:00&lt;00:00, 17253.55it/s]
-100%|██████████| 1479/1479 [00:00&lt;00:00, 20037.39it/s]
+<pre>100%|██████████| 5914/5914 [00:02&lt;00:00, 2955.61it/s]
+100%|██████████| 1479/1479 [00:00&lt;00:00, 2300.28it/s]
+100%|██████████| 5914/5914 [00:00&lt;00:00, 15798.62it/s]
+100%|██████████| 1479/1479 [00:00&lt;00:00, 18011.92it/s]
 </pre>
 </div>
 </div>
@@ -655,8 +658,8 @@ OK (skipped=1)</code></pre>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 2982/2982 [00:08&lt;00:00, 361.10it/s]
-100%|██████████| 706/706 [00:00&lt;00:00, 709.84it/s]
+<pre>100%|██████████| 2982/2982 [00:08&lt;00:00, 356.66it/s]
+100%|██████████| 706/706 [00:01&lt;00:00, 704.56it/s]
 </pre>
 </div>
 </div>
@@ -674,7 +677,8 @@ OK (skipped=1)</code></pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">train_data</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Cross check for missing files</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">train_data</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="c1">#remove the missing file</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2"> is missing in train_data&quot;</span><span class="p">)</span>
@@ -691,21 +695,6 @@ OK (skipped=1)</code></pre>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>/content/workspace/images/train/Abyssinian_102.jpg is missing in train_data
-/content/workspace/images/test/Abyssinian_100.jpg missing in test_data
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1219,7 +1208,7 @@ Instead of writing all tf.Example protos to a single file we will store the data
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Creating TFRecords ..... Done! Took 4.774616956710815 seconds
+<pre>Creating TFRecords ..... Done! Took 4.879507780075073 seconds
 </pre>
 </div>
 </div>
@@ -1498,7 +1487,8 @@ Instead of writing all tf.Example protos to a single file we will store the data
 <span class="c1">#if you can fit a large batch in memory, it may speed up your training</span>
 <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">16</span>
 <span class="c1">#The more steps, the longer the training</span>
-<span class="n">num_steps</span> <span class="o">=</span>  <span class="mi">50000</span>
+<span class="n">epochs</span>  <span class="o">=</span> <span class="mi">30</span>
+<span class="n">num_steps</span> <span class="o">=</span>  <span class="nb">len</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="o">//</span> <span class="n">batch_size</span> <span class="o">*</span> <span class="n">epochs</span>
 
 <span class="n">model_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/content/workspace/models/</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span>
 
@@ -1515,6 +1505,7 @@ Instead of writing all tf.Example protos to a single file we will store the data
 <span class="n">num_classes</span> <span class="o">=</span> <span class="n">get_num_classes</span><span class="p">(</span><span class="n">label_map_pbtxt_fname</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CUSTOM CONFIGURATION PARAMETERS : &quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Config Path: &quot;</span><span class="p">,</span> <span class="n">config_path</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Checkpoint Path: &quot;</span><span class="p">,</span> <span class="n">fine_tune</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Label Map: &quot;</span><span class="p">,</span> <span class="n">label_map_pbtxt_fname</span><span class="p">)</span>
@@ -1522,6 +1513,7 @@ Instead of writing all tf.Example protos to a single file we will store the data
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test TFRecords: &quot;</span><span class="p">,</span> <span class="n">test_record_fname</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total Steps: &quot;</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Num classes: &quot;</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1535,13 +1527,15 @@ Instead of writing all tf.Example protos to a single file we will store the data
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>CUSTOM CONFIGURATION PARAMETERS : 
+----------------------------------------
 Config Path:  /content/workspace/models/efficientdet_d0_coco17_tpu-32/pipeline.config
 Checkpoint Path:  /content/workspace/pre_trained_models/efficientdet_d0_coco17_tpu-32/checkpoint/ckpt-0
 Label Map:  /content/workspace/data/label_map.pbtxt
 Train TFRecords:  /content/workspace/data/train.record-?????-of-00010
 Test TFRecords:  /content/workspace/data/test.record-?????-of-00010
-Total Steps:  50000
+Total Steps:  5580
 Num classes:  37
+----------------------------------------
 </pre>
 </div>
 </div>
@@ -1688,6 +1682,7 @@ Num classes:  37
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>python /content/models/research/object_detection/model_main_tf2.py <span class="err">\</span>
     <span class="o">--</span><span class="n">pipeline_config_path</span><span class="o">=</span><span class="p">{</span><span class="n">config_path</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">num_train_steps</span><span class="o">=</span><span class="p">{</span><span class="n">num_steps</span><span class="p">}</span> \
     <span class="o">--</span><span class="n">model_dir</span><span class="o">=</span><span class="p">{</span><span class="n">model_dir</span><span class="p">}</span> \
     <span class="o">--</span><span class="n">alsologtostderr</span>
 </pre></div>
@@ -1737,11 +1732,12 @@ Num classes:  37
 <p><strong>Monitor Training Job Progress using TensorBoard:</strong></p>
 <p>We can either use one of the 2 commands:</p>
 <p>To open in a terminal :</p>
-<div class="highlight"><pre><span></span>tensorboard --logdir <span class="s2">&quot;/content/workspace/models/efficientdet_d0_coco17_tpu-32/</span>
-</pre></div>
+
+<pre><code>tensorboard --logdir "/content/workspace/models/efficientdet_d0_coco17_tpu-32/</code></pre>
 <p>For a Jupyter-Environment:</p>
-<div class="highlight"><pre><span></span><span class="o">%</span><span class="n">tensorboard</span> <span class="o">--</span><span class="n">logdir</span> <span class="s2">&quot;/content/workspace/models/efficientdet_d0_coco17_tpu-32/&quot;</span>
-</pre></div>
+
+<pre><code>%load_ext tensorboard
+%tensorboard --logdir "/content/workspace/models/efficientdet_d0_coco17_tpu-32/"</code></pre>
 
 </div>
 </div>
