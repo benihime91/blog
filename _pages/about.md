@@ -11,8 +11,7 @@ permalink: /about/
 </style>
 
 <div align="center">
-    <img src="https://www.dropbox.com/s/602juvgb0dfdbj3/git.jpeg?raw=1" alt="dp" width="230" height="250"
-        class="rounded-corners">
+    <img src="https://www.dropbox.com/s/kdjmh366iak3dju/avatar.jpg?raw=1" alt="avatar" class="rounded-corners" width="230" height="250">
 </div>
 <br />
 <br />
